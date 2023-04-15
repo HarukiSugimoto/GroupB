@@ -6,6 +6,9 @@ public class ServerThread extends Thread {
     Socket socket;
     BufferedReader in;
     PrintWriter out;
+    String username = "";
+    static OseroGame room = new OseroGame();
+
     static int num_thread = 0; //全スレッド共通の値にしたいのでstatic
 
     ServerThread(Socket socket) throws IOException{
@@ -32,6 +35,7 @@ public class ServerThread extends Thread {
                         if(user[1].equals(pass)){
                             flag = 0;
                             this.out.println("SUCCESS");
+                            username = name;
                             usersdata.close();
                         }else{
                             System.out.println("pass違う");
@@ -68,6 +72,7 @@ public class ServerThread extends Thread {
                     PrintWriter fw = new PrintWriter(new BufferedWriter(new FileWriter("./userdata.csv", true)));
                     fw.println(String.format("%s,%s,0:0", name, pass));
                     fw.close();
+                    username = name;
                     this.out.println("SUCCESS");
                 } else {
                     this.out.println("ERROR");
@@ -78,6 +83,7 @@ public class ServerThread extends Thread {
             System.out.println("Error");
         }
     }
+    static int wait_player = 0; //0:待機あり，1：待機なし
     public void recived(){ //ユーザーからの受け取り
         try{
             String command = this.in.readLine();
@@ -89,6 +95,14 @@ public class ServerThread extends Thread {
                 String name = this.in.readLine();
                 String pass = this.in.readLine();
                 signup(name, pass);
+            } else if (command.equals("gamestart")){ //このブロックシンクロナイズ考えないとダメそう
+                if(wait_player == 0){
+                    wait_player = 1;
+                    room.FirstAttack(username);
+                }else{
+                    wait_player = 0;
+                    room.SecondAttack(username);
+                }
             }
         }catch (IOException e){
             System.out.println("ERROR");

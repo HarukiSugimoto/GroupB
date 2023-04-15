@@ -10,6 +10,7 @@ public class OseroGui extends JFrame implements ActionListener{
     JButton button2;
     JButton button3;
     JButton button4;
+    JButton osero;
     JPanel card_panel;
     CardLayout layout;
     JTextField login_name;
@@ -65,7 +66,8 @@ public class OseroGui extends JFrame implements ActionListener{
         signup_page.add(button4);
 
         //oseropage
-        JButton osero = new JButton("オセロ");
+        osero = new JButton("接続");
+        osero.addActionListener(this);
         osero_page.add(osero);
 
         card_panel = new JPanel();
@@ -122,6 +124,8 @@ public class OseroGui extends JFrame implements ActionListener{
             }catch(IOException er){
 
             }
+        } else if (e.getSource() == osero){
+            client.out.println("gamestart");
         }
     }
 
