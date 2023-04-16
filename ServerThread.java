@@ -111,7 +111,7 @@ public class ServerThread extends Thread {
                 recived();
             }
         }catch(IOException e){
-            System.out.println("Error in method");
+            System.out.println("Error in run");
         }
     }
 }
