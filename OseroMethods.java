@@ -58,18 +58,26 @@ public class OseroMethods {
             playerStone = white;
             enemyStone = black;
         }
-        
-        for(int i = x+1; i < board_size; i++){//上方向の駒をひっくり返す
+        for(int i = x-1; i > 0; i--){//上方向の駒をひっくり返す
             if(board[i][y].equals(enemyStone)){
                 continue;
             }else if(board[i][y].equals(playerStone)){
-                for(i-=1; i>x; i--){
+                for(i+=1; i<x; i++){
                     board[i][y] = playerStone;
                 }
             }
             break;
         }
-
+        for(int i = x-1, j = y+1; i > 0 && j < board_size; i--, j++){//右上方向の駒をひっくり返す
+            if(board[i][j].equals(enemyStone)){
+                continue;
+            }else if(board[i][j].equals(playerStone)){
+                for(i+=1, j-=1; i<x && j>y; i++, j--){
+                    board[i][j] = playerStone;
+                }
+            }
+            break;
+        }
         for(int i = y+1; i < board_size; i++){//右方向の駒をひっくり返す
             if(board[x][i].equals(enemyStone)){
                 continue;
@@ -80,24 +88,54 @@ public class OseroMethods {
             }
             break;
         }
-
-        for(int i = x-1; i > 0; i--){//下方向の駒をひっくり返す
+        for(int i = x+1, j = y+1; i < board_size && j < board_size; i++, j++){//右下方向の駒をひっくり返す
+            if(board[i][j].equals(enemyStone)){
+                continue;
+            }else if(board[i][j].equals(playerStone)){
+                for(i-=1, j-=1; i>x && j>y; i--, j--){
+                    board[i][j] = playerStone;
+                }
+            }
+            break;
+        }
+        for(int i = x+1; i < board_size; i++){//下方向の駒をひっくり返す
             if(board[i][y].equals(enemyStone)){
                 continue;
             }else if(board[i][y].equals(playerStone)){
-                for(i+=1; i<x; i++){
+                for(i-=1; i>x; i--){
                     board[i][y] = playerStone;
                 }
             }
             break;
         }
+        for(int i = x+1, j = y-1; i < board_size && j > 0; i++, j--){//左下方向の駒をひっくり返す
 
+            if(board[i][j].equals(enemyStone)){
+                continue;
+            }else if(board[i][j].equals(playerStone)){
+                for(i-=1, j+=1; i>x && j<y; i--, j++){
+                    board[i][j] = playerStone;
+                }
+            }
+            break;
+        }
         for(int i = y-1; i > 0; i--){//左方向の駒をひっくり返す
             if(board[x][i].equals(enemyStone)){
                 continue;
             }else if(board[x][i].equals(playerStone)){
                 for(i+=1; i<y; i++){
                     board[x][i] = playerStone;
+                }
+            }
+            break;
+        }
+        for(int i = x-1, j = y-1; i > 0 && j > 0; i--, j--){//左上方向の駒をひっくり返す
+
+            if(board[i][j].equals(enemyStone)){
+                continue;
+            }else if(board[i][j].equals(playerStone)){
+                for(i+=1, j+=1; i<x && j<y; i++, j++){
+                    board[i][j] = playerStone;
                 }
             }
             break;
