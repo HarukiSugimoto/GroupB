@@ -38,7 +38,7 @@ public class ServerThread extends Thread {
                         usersdata.close();
                     }else{
                         System.out.println("pass違う");
-                        this.out.println("ERROR");
+                        this.out.println("ERROR in login pass");
                         usersdata.close();
                     }
                     
@@ -46,7 +46,7 @@ public class ServerThread extends Thread {
             }
             if (flag == 1){
                 System.out.println("登録無し");
-                this.out.println("ERROR");
+                this.out.println("ERROR in login name");
                 usersdata.close();
             }
         }
@@ -71,12 +71,12 @@ public class ServerThread extends Thread {
                     username = name;
                     this.out.println("SUCCESS");
                 } else {
-                    this.out.println("ERROR");
+                    this.out.println("ERROR in signup");
                     usersdata.close();
                 }
             }
         }catch(IOException e){
-            System.out.println("Error");
+            System.out.println("Error in signup");
         }
     }
     static int wait_player = 0; //0:待機あり，1：待機なし
@@ -101,7 +101,7 @@ public class ServerThread extends Thread {
                 }
             }
         }catch (IOException e){
-            System.out.println("ERROR");
+            System.out.println("ERROR in recived");
         }
     }
     public void run(){
@@ -111,7 +111,7 @@ public class ServerThread extends Thread {
                 recived();
             }
         }catch(IOException e){
-            System.out.println("Error in run method");
+            System.out.println("Error in method");
         }
     }
 }
