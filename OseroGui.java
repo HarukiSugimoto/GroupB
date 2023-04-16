@@ -5,12 +5,13 @@ import java.io.*;
 import java.net.*;
 
 public class OseroGui extends JFrame implements ActionListener{
-    JLabel label;
+    JLabel announce;
+    JLabel partner;
     JButton button1;
     JButton button2;
     JButton button3;
     JButton button4;
-    JButton osero;
+    JButton access;
     JPanel card_panel;
     CardLayout layout;
     JTextField login_name;
@@ -35,6 +36,7 @@ public class OseroGui extends JFrame implements ActionListener{
         JPanel first_page = new JPanel();
         JPanel login_page = new JPanel();
         JPanel signup_page = new JPanel();
+        JPanel standby_page = new JPanel();
         JPanel osero_page = new JPanel();
 
         //firstpage
@@ -65,10 +67,16 @@ public class OseroGui extends JFrame implements ActionListener{
         signup_page.add(signup_pass);
         signup_page.add(button4);
 
+        //standbypage
+        announce = new JLabel("　　　　　　　");//とりまこれで動いたからそのまま
+        access = new JButton("接続");
+        access.addActionListener(this);
+        standby_page.add(announce);
+        standby_page.add(access);
+
         //oseropage
-        osero = new JButton("接続");
-        osero.addActionListener(this);
-        osero_page.add(osero);
+        partner = new JLabel("");
+        osero_page.add(partner);
 
         card_panel = new JPanel();
         layout = new CardLayout();
@@ -76,6 +84,7 @@ public class OseroGui extends JFrame implements ActionListener{
         card_panel.add(first_page);
         card_panel.add(login_page);
         card_panel.add(signup_page);
+        card_panel.add(standby_page);
         card_panel.add(osero_page);
 
         getContentPane().add(card_panel, BorderLayout.CENTER);
@@ -87,7 +96,7 @@ public class OseroGui extends JFrame implements ActionListener{
             layout.next(card_panel);
         } else if (e.getSource() == button2){ //first -> login
             layout.next(card_panel);
-        } else if (e.getSource() == button3){ //login -> osero
+        } else if (e.getSource() == button3){ //login -> standby
             String name = login_name.getText();
             char[] password = login_pass.getPassword();
             String pass = new String(password);
@@ -106,7 +115,7 @@ public class OseroGui extends JFrame implements ActionListener{
             }catch(IOException er){
 
             }
-        } else if (e.getSource() == button4){ //signup -> osero
+        } else if (e.getSource() == button4){ //signup -> standby
             String name = signup_name.getText();
             char[] password = signup_pass.getPassword();
             String pass = new String(password);
@@ -124,8 +133,23 @@ public class OseroGui extends JFrame implements ActionListener{
             }catch(IOException er){
 
             }
-        } else if (e.getSource() == osero){
-            client.out.println("gamestart");
+        } else if (e.getSource() == access){
+            // layout.next(card_panel);
+            announce.setText("対戦相手待ち");
+            announce.paintImmediately( announce.getVisibleRect());
+            GameStart();
+
+        }
+    }
+    
+    public void GameStart(){
+        client.out.println("gamestart"); 
+        try {
+            String partner_name = client.in.readLine();
+            String text = "対戦相手：" + partner_name;
+            partner.setText(text);
+        } catch (IOException er) {
+            er.printStackTrace();
         }
     }
 

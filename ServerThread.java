@@ -24,35 +24,31 @@ public class ServerThread extends Thread {
         System.out.println("");
     }
 
-    public synchronized void login(String name, String pass){
+    public synchronized void login(String name, String pass) throws FileNotFoundException, IOException{
         int flag = 1;
-        try{
-            try (BufferedReader usersdata = new BufferedReader(new InputStreamReader(new FileInputStream("./userdata.csv")))) {
-                String userdata;
-                while((userdata = usersdata.readLine()) != null){
-                    String[] user = userdata.split(",", 0);
-                    if(user[0].equals(name)){
-                        if(user[1].equals(pass)){
-                            flag = 0;
-                            this.out.println("SUCCESS");
-                            username = name;
-                            usersdata.close();
-                        }else{
-                            System.out.println("pass違う");
-                            this.out.println("ERROR");
-                            usersdata.close();
-                        }
-                        
+        try (BufferedReader usersdata = new BufferedReader(new InputStreamReader(new FileInputStream("./userdata.csv")))) {
+            String userdata;
+            while((userdata = usersdata.readLine()) != null){
+                String[] user = userdata.split(",", 0);
+                if(user[0].equals(name)){
+                    if(user[1].equals(pass)){
+                        flag = 0;
+                        this.out.println("SUCCESS");
+                        username = name;
+                        usersdata.close();
+                    }else{
+                        System.out.println("pass違う");
+                        this.out.println("ERROR");
+                        usersdata.close();
                     }
-                }
-                if (flag == 1){
-                    System.out.println("登録無し");
-                    this.out.println("ERROR");
-                    usersdata.close();
+                    
                 }
             }
-        }catch(IOException e){
-            System.out.println("Error");
+            if (flag == 1){
+                System.out.println("登録無し");
+                this.out.println("ERROR");
+                usersdata.close();
+            }
         }
     } 
 
@@ -98,10 +94,10 @@ public class ServerThread extends Thread {
             } else if (command.equals("gamestart")){ //このブロックシンクロナイズ考えないとダメそう
                 if(wait_player == 0){
                     wait_player = 1;
-                    room.FirstAttack(username);
+                    room.FirstAttack(this);
                 }else{
                     wait_player = 0;
-                    room.SecondAttack(username);
+                    room.SecondAttack(this);
                 }
             }
         }catch (IOException e){
@@ -115,7 +111,7 @@ public class ServerThread extends Thread {
                 recived();
             }
         }catch(IOException e){
-            System.out.println("Error");
+            System.out.println("Error in run method");
         }
     }
 }
