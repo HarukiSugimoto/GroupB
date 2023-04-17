@@ -11,9 +11,9 @@ public class OseroGame{
         } catch(InterruptedException e){
             System.out.println("ERROR in FirstAttack");
         }
+        notify();
         while(true){
             send(thread.username);
-            notify();
             try{
                 wait();
             } catch(InterruptedException e){
@@ -21,6 +21,13 @@ public class OseroGame{
             }
             String partner_name = get();
             thread.out.println(partner_name);
+            System.out.println("first");
+            notify();
+            try{
+                Thread.sleep(5000);
+            } catch(InterruptedException e){
+                System.out.println("ERROR in FirstAttack Sleep");
+            }
         }
     }
 
@@ -37,7 +44,13 @@ public class OseroGame{
             String partner_name = get();
             thread.out.println(partner_name);
             send(thread.username);
+            System.out.println("second");
             notify();
+            try{
+                Thread.sleep(5000);
+            } catch(InterruptedException e){
+                System.out.println("ERROR in SeconfAttack Sleep");
+            }
             try{
                 wait();
             } catch(InterruptedException e){
