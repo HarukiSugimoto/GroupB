@@ -9,17 +9,19 @@ public class OseroGame{
         try{
             wait();
         } catch(InterruptedException e){
-            System.out.println("ERROR");
+            System.out.println("ERROR in FirstAttack");
         }
-        send(thread.username);
-        notify();
-        try{
-            wait();
-        } catch(InterruptedException e){
-            System.out.println("ERROR");
+        while(true){
+            send(thread.username);
+            notify();
+            try{
+                wait();
+            } catch(InterruptedException e){
+                System.out.println("ERROR in FirstAttack");
+            }
+            String partner_name = get();
+            thread.out.println(partner_name);
         }
-        String partner_name = get();
-        thread.out.println(partner_name);
     }
 
     public synchronized void SecondAttack(ServerThread thread){ //後攻
@@ -29,16 +31,18 @@ public class OseroGame{
         try{
             wait();
         } catch(InterruptedException e){
-            System.out.println("ERROR");
+            System.out.println("ERROR in SecondAttack");
         }
-        String partner_name = get();
-        thread.out.println(partner_name);
-        send(thread.username);
-        notify();
-        try{
-            wait();
-        } catch(InterruptedException e){
-            System.out.println("ERROR");
+        while(true){
+            String partner_name = get();
+            thread.out.println(partner_name);
+            send(thread.username);
+            notify();
+            try{
+                wait();
+            } catch(InterruptedException e){
+                System.out.println("ERROR in SecondAttack");
+            }
         }
     }
 
