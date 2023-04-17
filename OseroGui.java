@@ -19,6 +19,12 @@ public class OseroGui extends JFrame implements ActionListener{
     JTextField signup_name;
     JPasswordField signup_pass;
     Client client;
+    JPanel first_page;
+    JPanel login_page;
+    JPanel signup_page;
+    JPanel standby_page;
+    JPanel osero_page;
+
 
     OseroGui(Client cl){
         OseroGui gui = new OseroGui("オセロ", cl);
@@ -33,50 +39,20 @@ public class OseroGui extends JFrame implements ActionListener{
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        JPanel first_page = new JPanel();
-        JPanel login_page = new JPanel();
-        JPanel signup_page = new JPanel();
-        JPanel standby_page = new JPanel();
-        JPanel osero_page = new JPanel();
-
         //firstpage
-        button1 = new JButton("SignUp");
-        button1.setPreferredSize(new Dimension(120, 40));
-        button1.addActionListener(this);
-        button2 = new JButton("Login");
-        button2.setPreferredSize(new Dimension(120, 40));
-        button2.addActionListener(this);
-        first_page.add(button1);
-        first_page.add(button2);
+        first_page();
             
         //loginpage
-        login_name = new JTextField(10);
-        login_pass = new JPasswordField(10);
-        button3 = new JButton("Login");
-        button3.addActionListener(this);
-        login_page.add(login_name);
-        login_page.add(login_pass);
-        login_page.add(button3);
+        login_page();
 
         //signuppage
-        signup_name = new JTextField(10);
-        signup_pass = new JPasswordField(10);
-        button4 = new JButton("SignUp");
-        button4.addActionListener(this);
-        signup_page.add(signup_name);
-        signup_page.add(signup_pass);
-        signup_page.add(button4);
+        signup_page();
 
         //standbypage
-        announce = new JLabel("　　　　　　　");//とりまこれで動いたからそのまま
-        access = new JButton("接続");
-        access.addActionListener(this);
-        standby_page.add(announce);
-        standby_page.add(access);
+        standby_page();
 
         //oseropage
-        partner = new JLabel("");
-        osero_page.add(partner);
+        osero_page();
 
         card_panel = new JPanel();
         layout = new CardLayout();
@@ -151,6 +127,50 @@ public class OseroGui extends JFrame implements ActionListener{
         } catch (IOException er) {
             er.printStackTrace();
         }
+    }
+
+    public void first_page(){
+        first_page = new JPanel();
+        button1 = new JButton("SignUp");
+        button1.setPreferredSize(new Dimension(120, 40));
+        button1.addActionListener(this);
+        button2 = new JButton("Login");
+        button2.setPreferredSize(new Dimension(120, 40));
+        button2.addActionListener(this);
+        first_page.add(button1);
+        first_page.add(button2);
+    }
+    public void login_page(){
+        login_page = new JPanel();
+        login_name = new JTextField(10);
+        login_pass = new JPasswordField(10);
+        button3 = new JButton("Login");
+        button3.addActionListener(this);
+        login_page.add(login_name);
+        login_page.add(login_pass);
+        login_page.add(button3);
+    }
+    public void signup_page(){
+        signup_page = new JPanel();
+        signup_name = new JTextField(10);
+        signup_pass = new JPasswordField(10);
+        button4 = new JButton("SignUp");
+        button4.addActionListener(this);
+        signup_page.add(signup_name);
+        signup_page.add(signup_pass);
+        signup_page.add(button4);
+    }
+    public void standby_page(){
+        standby_page = new JPanel();
+        announce = new JLabel("　　　　　　　");//とりまこれで動いたからそのまま
+        access = new JButton("接続");
+        access.addActionListener(this);
+        standby_page.add(announce);
+        standby_page.add(access);
+    }
+    public void osero_page(){
+        osero_page = new JPanel();
+        //ここにオセロの盤面を作成
     }
 
 }
