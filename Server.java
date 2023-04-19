@@ -8,6 +8,7 @@ public class Server {
         ServerSocket s = new ServerSocket(PORT);
         try{
             while(true){
+
                 Socket socket = s.accept();
                 new ServerThread(socket).start();
             }

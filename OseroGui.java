@@ -110,7 +110,6 @@ public class OseroGui extends JFrame implements ActionListener{
 
             }
         } else if (e.getSource() == access){
-            // layout.next(card_panel);
             announce.setText("対戦相手待ち");
             announce.paintImmediately( announce.getVisibleRect());
             GameStart();
@@ -120,6 +119,7 @@ public class OseroGui extends JFrame implements ActionListener{
     
     public void GameStart(){
         client.out.println("gamestart"); 
+        layout.next(card_panel);
         try {
             String partner_name = client.in.readLine();
             String text = "対戦相手：" + partner_name;
@@ -170,6 +170,8 @@ public class OseroGui extends JFrame implements ActionListener{
     }
     public void osero_page(){
         osero_page = new JPanel();
+        partner = new JLabel("");
+        osero_page.add(partner);
         //ここにオセロの盤面を作成
     }
 

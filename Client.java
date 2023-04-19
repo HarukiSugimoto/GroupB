@@ -16,7 +16,8 @@ public class Client {
     }
 
     public static void main(String args[]) throws IOException{
-        Client client = new Client();
-        new OseroGui(client);
+        // Client client = new Client();
+        // new OseroGui(client);
+        new OseroGui(new Client());
     }
 }

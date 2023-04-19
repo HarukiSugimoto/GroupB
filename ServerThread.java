@@ -7,9 +7,9 @@ public class ServerThread extends Thread {
     BufferedReader in;
     PrintWriter out;
     String username = "";
-    static OseroGame room = new OseroGame();
 
     static int num_thread = 0; //全スレッド共通の値にしたいのでstatic
+    static OseroGame room;
 
     ServerThread(Socket socket) throws IOException{
         System.out.println("スレッドが立ち上がりました");
@@ -94,9 +94,11 @@ public class ServerThread extends Thread {
             } else if (command.equals("gamestart")){ //このブロックシンクロナイズ考えないとダメそう
                 if(wait_player == 0){
                     wait_player = 1;
+                    room = get_or_set_room(new OseroGame());
                     room.FirstAttack(this);
                 }else{
                     wait_player = 0;
+                    room = get_or_set_room(null);
                     room.SecondAttack(this);
                 }
             }
@@ -112,6 +114,15 @@ public class ServerThread extends Thread {
             }
         }catch(IOException e){
             System.out.println("Error in run");
+        }
+    }
+
+    public synchronized OseroGame get_or_set_room(OseroGame r){
+        if(r == null){
+            return room;
+        }else{
+            room = r;
+            return room;
         }
     }
 }
