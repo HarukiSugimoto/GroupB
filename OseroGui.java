@@ -131,11 +131,13 @@ public class OseroGui extends JFrame implements ActionListener{
 
     public void first_page(){
         first_page = new JPanel();
+        first_page.setLayout(new GridBagLayout());
+        first_page.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         button1 = new JButton("SignUp");
-        button1.setPreferredSize(new Dimension(120, 40));
+        button1.setPreferredSize(new Dimension(150, 50));
         button1.addActionListener(this);
         button2 = new JButton("Login");
-        button2.setPreferredSize(new Dimension(120, 40));
+        button2.setPreferredSize(new Dimension(150, 50));
         button2.addActionListener(this);
         first_page.add(button1);
         first_page.add(button2);
@@ -144,9 +146,13 @@ public class OseroGui extends JFrame implements ActionListener{
         login_page = new JPanel();
         login_name = new JTextField(10);
         login_pass = new JPasswordField(10);
+        JLabel name = new JLabel("ユーザー名：");
+        JLabel pass = new JLabel("パスワード：");
         button3 = new JButton("Login");
         button3.addActionListener(this);
+        login_page.add(name);
         login_page.add(login_name);
+        login_page.add(pass);
         login_page.add(login_pass);
         login_page.add(button3);
     }
