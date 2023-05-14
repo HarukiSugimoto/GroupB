@@ -38,17 +38,29 @@ public class OseroMethods {
         System.out.println("|");
         }
     }
-    public void setStone(int player, int x, int y){ //駒を置く
+    public int setStone(int player, int x, int y){ //駒を置く
+        if((board[x][y].equals(black))||(board[x][y].equals(white))){//すでにコマがある場合
+            System.out.println("そこには置けません");
+            return -1;//置けなかったことを表す
+        }
         if(player == 1){
             board[x][y] = black;
         } else if(player == 2){
             board[x][y] = white;
         } else{
             System.out.println("プレイヤーの指定が間違っています");
+            return -1;
         }
-        reverseStone(player, x, y);
+        int count = reverseStone(player, x, y);
+        if(count < 1){
+            System.out.println("そこには置けません");
+            board[x][y] = "　";
+            return -1;
+        }
+        return 0;
     }
-    public void reverseStone(int player, int x, int y){ //駒をひっくり返す
+    public int reverseStone(int player, int x, int y){ //駒をひっくり返す
+        int count = 0;
         String playerStone = "", enemyStone= "";
 
         if(player == 1){
@@ -64,6 +76,7 @@ public class OseroMethods {
             }else if(board[i][y].equals(playerStone)){
                 for(i+=1; i<x; i++){
                     board[i][y] = playerStone;
+                    count++;
                 }
             }
             break;
@@ -74,6 +87,7 @@ public class OseroMethods {
             }else if(board[i][j].equals(playerStone)){
                 for(i+=1, j-=1; i<x && j>y; i++, j--){
                     board[i][j] = playerStone;
+                    count++;
                 }
             }
             break;
@@ -84,6 +98,7 @@ public class OseroMethods {
             }else if(board[x][i].equals(playerStone)){
                 for(i-=1; i>y; i--){
                     board[x][i] = playerStone;
+                    count++;
                 }
             }
             break;
@@ -94,6 +109,7 @@ public class OseroMethods {
             }else if(board[i][j].equals(playerStone)){
                 for(i-=1, j-=1; i>x && j>y; i--, j--){
                     board[i][j] = playerStone;
+                    count++;
                 }
             }
             break;
@@ -104,6 +120,7 @@ public class OseroMethods {
             }else if(board[i][y].equals(playerStone)){
                 for(i-=1; i>x; i--){
                     board[i][y] = playerStone;
+                    count++;
                 }
             }
             break;
@@ -115,6 +132,7 @@ public class OseroMethods {
             }else if(board[i][j].equals(playerStone)){
                 for(i-=1, j+=1; i>x && j<y; i--, j++){
                     board[i][j] = playerStone;
+                    count++;
                 }
             }
             break;
@@ -125,6 +143,7 @@ public class OseroMethods {
             }else if(board[x][i].equals(playerStone)){
                 for(i+=1; i<y; i++){
                     board[x][i] = playerStone;
+                    count++;
                 }
             }
             break;
@@ -136,10 +155,12 @@ public class OseroMethods {
             }else if(board[i][j].equals(playerStone)){
                 for(i+=1, j+=1; i<x && j<y; i++, j++){
                     board[i][j] = playerStone;
+                    count++;
                 }
             }
             break;
         }
+        return count;
     }
 
     public void debMode(OseroMethods osero){
