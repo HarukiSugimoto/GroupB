@@ -11,7 +11,7 @@ public class OseroGui {
     CardLayout cardLayout;
     JPanel containerPanel;
     JFrame mainFrame;
-    int ban[][] = {
+    int board[][] = {
         {0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0},
@@ -22,7 +22,8 @@ public class OseroGui {
         {0,0,0,0,0,0,0,0},
     };
     JLabel announce;
-    JLabel partner;
+    String partner = "";
+    String turn = "";
     JButton button1;
     JButton button2;
     JButton button3;
@@ -39,6 +40,8 @@ public class OseroGui {
     JPanel login_page;
     JPanel signup_page;
     JPanel standby_page;
+    JPanel osero_page;
+    Timer timer;
 
     OseroGui(Client cl){
         client = cl;
@@ -52,11 +55,12 @@ public class OseroGui {
         login_page();
         signup_page();
         standby_page();
+        osero_page = new Reversi();
         containerPanel.add(first_page, "first");
         containerPanel.add(login_page, "login");
         containerPanel.add(signup_page, "signup");
         containerPanel.add(standby_page, "standby");
-        containerPanel.add(new Reversi(), "osero");
+        containerPanel.add(osero_page, "osero");
         mainFrame.getContentPane().add(containerPanel, BorderLayout.CENTER);
         // mainFrame.pack();
         mainFrame.setVisible(true);
@@ -95,7 +99,6 @@ public class OseroGui {
         button3.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
-                cardLayout.show(containerPanel, "standby");
                 String name = login_name.getText();
                 char[] password = login_pass.getPassword();
                 String pass = new String(password);
@@ -159,8 +162,9 @@ public class OseroGui {
         access.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
-                client.out.println("gamestart"); 
-                cardLayout.show(containerPanel, "osero");
+                announce.setText("対戦相手検索中");
+                announce.paintImmediately( announce.getVisibleRect());
+                GameStart();
             }
         });
         standby_page.add(announce);
@@ -178,6 +182,9 @@ public class OseroGui {
             // 背景
             g.setColor(Color.gray);
             g.fillRect(0, 0, WIDTH, HEIGHT);
+            g.setColor(Color.BLACK);
+            g.drawString("対戦相手：" + partner, 0, 50);
+            g.drawString("あなたは" + turn + "です", 0, 70);
             // 盤面描画
             for (int i = 0; i < 8; i++) {
                 int y = tm + cs * i;
@@ -187,8 +194,8 @@ public class OseroGui {
                     g.fillRect(x, y, cs, cs);
                     g.setColor(Color.black);
                     g.drawRect(x, y, cs, cs);
-                    if (ban[i][j] != 0) {
-                        if (ban[i][j] == 1) {
+                    if (board[i][j] != 0) {
+                        if (board[i][j] == 1) {
                             g.setColor(Color.black);
                         } else {
                             g.setColor(Color.white);
@@ -212,15 +219,53 @@ public class OseroGui {
                 // クリックされたマスを特定
                 int row = (y - tm) / cs;
                 int col = (x - lm) / cs;
-                if (ban[row][col] == 0) {
-                    // 黒コマを置く
-                    ban[row][col] = 2; //白か黒固定
-
+                if (board[row][col] == 0) {
+                    if(!(timer.isRunning())){
+                        client.out.println(col);
+                        client.out.println(row);
+                        reload();
+                        timer.start();
+                    }
                 }
-                // 再描画
-                repaint();
             }
         }
+    }
+    public void reload(){
+        for (int i = 0; i < board.length; i++) {
+            for(int k = 0; k < board[0].length; k++){
+                try {
+                    board[i][k] = Integer.parseInt(client.in.readLine());
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                }
+            }
+        }
+        osero_page.repaint();
+    }
+    public void GameStart(){
+        client.out.println("gamestart"); 
+        try{
+            partner = client.in.readLine();
+            turn = client.in.readLine();
+        }catch(IOException e){
+            
+        }
+        cardLayout.show(containerPanel, "osero");
+        timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    while(!((client.in.readLine()).equals("STOP"))){
+                        return;
+                    }
+                    reload();
+                    timer.stop();
+                } catch (IOException er) {
+                    // TODO: handle exception
+                }
+            }
+        });
+        timer.start();
 
     }
 }
