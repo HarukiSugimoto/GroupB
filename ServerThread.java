@@ -92,14 +92,17 @@ public class ServerThread extends Thread {
                 String pass = this.in.readLine();
                 signup(name, pass);
             } else if (command.equals("gamestart")){ //このブロックシンクロナイズ考えないとダメそう
-                if(wait_player == 0){
-                    wait_player = 1;
-                    room = get_or_set_room(new OseroGame());
-                    room.FirstAttack(this);
-                }else{
-                    wait_player = 0;
-                    room = get_or_set_room(null);
-                    room.SecondAttack(this);
+                synchronized(this){
+                    if(wait_player == 0){
+                        wait_player = 1;
+                        room = get_or_set_room(new OseroGame());
+                        room.FirstAttack(this);
+                    }else{
+                        wait_player = 0;
+                        room = get_or_set_room(null);
+                        room.SecondAttack(this);
+                    }
+
                 }
             }
         }catch (IOException e){
