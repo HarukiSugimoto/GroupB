@@ -133,12 +133,15 @@ public class OseroMethods {
         return count;
     }
 
-    public int[][] PlayOsero(int player, int x, int y){
+    public int PlayOsero(int player, int x, int y){
         // while(true){
         //     osero.setStone(1, x, y);
         //     osero.setStone(2, x, y);
         // }
         int check = setStone(player, x, y);
-        return board;
+        return check;
     }
+     public int[][] get_Board(){
+        return board;
+     }
 }
