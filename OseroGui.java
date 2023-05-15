@@ -183,8 +183,13 @@ public class OseroGui {
             g.setColor(Color.gray);
             g.fillRect(0, 0, WIDTH, HEIGHT);
             g.setColor(Color.BLACK);
-            g.drawString("対戦相手：" + partner, 0, 50);
-            g.drawString("あなたは" + turn + "です", 0, 70);
+            g.drawString("対戦相手：" + partner, 0, 30);
+            g.drawString("あなたは" + turn + "です", 0, 50);
+            if(turn.equals("先攻")){
+                g.drawString("あなたは黒石です", 0, 70);
+            }else{
+                g.drawString("あなたは白石です", 0, 70);
+            }
             // 盤面描画
             for (int i = 0; i < 8; i++) {
                 int y = tm + cs * i;

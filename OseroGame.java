@@ -14,6 +14,7 @@ public class OseroGame{
         {0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0},
     };
+    OseroMethods osero = new OseroMethods(board);
 
     public synchronized void FirstAttack(ServerThread thread){ //先攻
         System.out.printf("%s(先攻)者参加", thread.username);
@@ -38,7 +39,8 @@ public class OseroGame{
             try{
                 int col = Integer.parseInt(thread.in.readLine());
                 int row = Integer.parseInt(thread.in.readLine());
-                board[row][col] = 1;//黒
+                // board[row][col] = 1;//黒
+                board = osero.PlayOsero(1, row, col);
             }catch(IOException e){
                 
             }
@@ -85,7 +87,8 @@ public class OseroGame{
             try{
                 int col = Integer.parseInt(thread.in.readLine());
                 int row = Integer.parseInt(thread.in.readLine());
-                board[Math.abs(7-row)][Math.abs(7-col)] = 2;//しろ
+                // board[Math.abs(7-row)][Math.abs(7-col)] = 2;//しろ
+                board = osero.PlayOsero(2, Math.abs(7-row), Math.abs(7-col));
             }catch(IOException e){
                 
             }
