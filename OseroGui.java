@@ -47,7 +47,7 @@ public class OseroGui {
         client = cl;
         mainFrame = new JFrame("オセロアプリ");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setSize(width, height);
+        // mainFrame.setSize(width, height);
         containerPanel = new JPanel();
         cardLayout = new CardLayout();
         containerPanel.setLayout(cardLayout);
@@ -64,6 +64,7 @@ public class OseroGui {
         mainFrame.getContentPane().add(containerPanel, BorderLayout.CENTER);
         // mainFrame.pack();
         mainFrame.setVisible(true);
+        mainFrame.setLocationRelativeTo(null);
     }
     public void first_page(){
         first_page = new JPanel();
@@ -74,6 +75,7 @@ public class OseroGui {
         button1.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
+                mainFrame.setSize(250, 130);
                 cardLayout.show(containerPanel, "signup");
             }
         });
@@ -83,11 +85,13 @@ public class OseroGui {
         button2.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
+                mainFrame.setSize(250, 130);
                 cardLayout.show(containerPanel, "login");
             }
         });
         first_page.add(button1);
         first_page.add(button2);
+        mainFrame.setSize(200, 100);
     }
     public void login_page(){
         login_page = new JPanel();
@@ -108,6 +112,7 @@ public class OseroGui {
                 try{
                     String ans = client.in.readLine();
                     if(ans.equals("SUCCESS")){
+                        mainFrame.setSize(170, 100);
                         cardLayout.show(containerPanel, "standby");
                     } else {
                         JFrame Error_frame = new JFrame();
@@ -123,11 +128,14 @@ public class OseroGui {
         login_page.add(pass);
         login_page.add(login_pass);
         login_page.add(button3);
+
     }
     public void signup_page(){
         signup_page = new JPanel();
         signup_name = new JTextField(10);
         signup_pass = new JPasswordField(10);
+        JLabel name = new JLabel("ユーザー名：");
+        JLabel pass = new JLabel("パスワード：");
         button4 = new JButton("SignUp");
         button4.addActionListener(new ActionListener(){
             @Override
@@ -141,6 +149,7 @@ public class OseroGui {
                 try{
                     String ans = client.in.readLine();
                     if(ans.equals("SUCCESS")){
+                        mainFrame.setSize(170, 100);
                         cardLayout.show(containerPanel, "standby");
                     } else {
                         JFrame Error_frame = new JFrame();
@@ -151,7 +160,9 @@ public class OseroGui {
                 }  
             }
         });
+        signup_page.add(name);
         signup_page.add(signup_name);
+        signup_page.add(pass);
         signup_page.add(signup_pass);
         signup_page.add(button4);
     }
@@ -255,6 +266,7 @@ public class OseroGui {
         }catch(IOException e){
             
         }
+        mainFrame.setSize(500, 550);
         cardLayout.show(containerPanel, "osero");
         timer = new Timer(1000, new ActionListener() {
             @Override
