@@ -6,7 +6,10 @@ public class ServerThread extends Thread {
     Socket socket;
     BufferedReader in;
     PrintWriter out;
+    String username = "";
+
     static int num_thread = 0; //全スレッド共通の値にしたいのでstatic
+    static OseroGame room;
 
     ServerThread(Socket socket) throws IOException{
         System.out.println("スレッドが立ち上がりました");
@@ -21,34 +24,31 @@ public class ServerThread extends Thread {
         System.out.println("");
     }
 
-    public synchronized void login(String name, String pass){
+    public synchronized void login(String name, String pass) throws FileNotFoundException, IOException{
         int flag = 1;
-        try{
-            try (BufferedReader usersdata = new BufferedReader(new InputStreamReader(new FileInputStream("./userdata.csv")))) {
-                String userdata;
-                while((userdata = usersdata.readLine()) != null){
-                    String[] user = userdata.split(",", 0);
-                    if(user[0].equals(name)){
-                        if(user[1].equals(pass)){
-                            flag = 0;
-                            this.out.println("SUCCESS");
-                            usersdata.close();
-                        }else{
-                            System.out.println("pass違う");
-                            this.out.println("ERROR");
-                            usersdata.close();
-                        }
-                        
+        try (BufferedReader usersdata = new BufferedReader(new InputStreamReader(new FileInputStream("./userdata.csv")))) {
+            String userdata;
+            while((userdata = usersdata.readLine()) != null){
+                String[] user = userdata.split(",", 0);
+                if(user[0].equals(name)){
+                    if(user[1].equals(pass)){
+                        flag = 0;
+                        this.out.println("SUCCESS");
+                        username = name;
+                        usersdata.close();
+                    }else{
+                        System.out.println("pass違う");
+                        this.out.println("ERROR in login pass");
+                        usersdata.close();
                     }
-                }
-                if (flag == 1){
-                    System.out.println("登録無し");
-                    this.out.println("ERROR");
-                    usersdata.close();
+                    
                 }
             }
-        }catch(IOException e){
-            System.out.println("Error");
+            if (flag == 1){
+                System.out.println("登録無し");
+                this.out.println("ERROR in login name");
+                usersdata.close();
+            }
         }
     } 
 
@@ -68,16 +68,18 @@ public class ServerThread extends Thread {
                     PrintWriter fw = new PrintWriter(new BufferedWriter(new FileWriter("./userdata.csv", true)));
                     fw.println(String.format("%s,%s,0:0", name, pass));
                     fw.close();
+                    username = name;
                     this.out.println("SUCCESS");
                 } else {
-                    this.out.println("ERROR");
+                    this.out.println("ERROR in signup");
                     usersdata.close();
                 }
             }
         }catch(IOException e){
-            System.out.println("Error");
+            System.out.println("Error in signup");
         }
     }
+    static int wait_player = 0; //0:待機あり，1：待機なし
     public void recived(){ //ユーザーからの受け取り
         try{
             String command = this.in.readLine();
@@ -89,9 +91,22 @@ public class ServerThread extends Thread {
                 String name = this.in.readLine();
                 String pass = this.in.readLine();
                 signup(name, pass);
+            } else if (command.equals("gamestart")){ //このブロックシンクロナイズ考えないとダメそう
+                synchronized(this){
+                    if(wait_player == 0){
+                        wait_player = 1;
+                        room = get_or_set_room(new OseroGame());
+                        room.FirstAttack(this);
+                    }else{
+                        wait_player = 0;
+                        room = get_or_set_room(null);
+                        room.SecondAttack(this);
+                    }
+
+                }
             }
         }catch (IOException e){
-            System.out.println("ERROR");
+            System.out.println("ERROR in recived");
         }
     }
     public void run(){
@@ -101,7 +116,16 @@ public class ServerThread extends Thread {
                 recived();
             }
         }catch(IOException e){
-            System.out.println("Error");
+            System.out.println("Error in run");
+        }
+    }
+
+    public synchronized OseroGame get_or_set_room(OseroGame r){
+        if(r == null){
+            return room;
+        }else{
+            room = r;
+            return room;
         }
     }
 }
