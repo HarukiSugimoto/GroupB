@@ -9,7 +9,7 @@ public class OseroMethods {
         this.board = board;
     }
 
-    public int checkStone(int player){//playerが置ける場所が存在するかチェックする
+    public int checkStone(int player){//playerが置ける場所が存在するかチェックし、あれば１、なければ０(bool型にしても良き)
         int playerStone = 0, enemyStone = 0;
         int count = 0;
         if(player == 1){
@@ -31,6 +31,7 @@ public class OseroMethods {
                             count++;
                             break;
                         }
+                        if(count>0){return 1;}
                         break;
                     }
                     for(int k = i-1, l = j+1; k > 0 && l < board_size; k--, l++){//右上方向
@@ -40,6 +41,7 @@ public class OseroMethods {
                             count++;
                             break;
                         }
+                        if(count>0){return 1;}
                         break;
                     }
                     for(int k = j+1; k < board_size; k++){//右方向
@@ -49,6 +51,7 @@ public class OseroMethods {
                             count++;
                             break;
                         }
+                        if(count>0){return 1;}
                         break;
                     }
                     for(int k = i+1, l = j+1; k < board_size && l < board_size; k++, l++){//右下方向
@@ -58,6 +61,7 @@ public class OseroMethods {
                             count++;
                             break;
                         }
+                        if(count>0){return 1;}
                         break;
                     }
                     for(int k = i+1; k < board_size; k++){//下方向
@@ -67,6 +71,7 @@ public class OseroMethods {
                             count++;
                             break;
                         }
+                        if(count>0){return 1;}
                         break;
                     }
                     for(int k = i+1, l = j-1; k < board_size && l > 0; k++, l--){//左下方向
@@ -76,6 +81,7 @@ public class OseroMethods {
                             count++;
                             break;
                         }
+                        if(count>0){return 1;}
                         break;
                     }
                     for(int k = j-1; k > 0; k--){//左方向
@@ -85,6 +91,7 @@ public class OseroMethods {
                             count++;
                             break;
                         }
+                        if(count>0){return 1;}
                         break;
                     }
                     for(int k = i-1, l = j-1; k > 0 && l > 0; k--, l--){//左上方向
@@ -94,13 +101,13 @@ public class OseroMethods {
                             count++;
                             break;
                         }
+                        if(count>0){return 1;}
                         break;
                     }
                 }
             }
         }
-        System.out.println("count = " + count);//デバッグ用 count=0のとき置ける場所がない
-        return count;
+        return 0;//おける場所がない
     }
     public int scoreStone(){//駒の数を数える
         int black = 1, white = 2;
@@ -253,7 +260,7 @@ public class OseroMethods {
         //     osero.setStone(2, x, y);
         // }
         int check = setStone(player, x, y);
-        checkStone(player%2+1);//デバッグ用
+        System.out.println(checkStone(player%2+1));//デバッグ用
         System.out.println(scoreStone());//デバッグ用
         return check;
     }
