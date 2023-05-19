@@ -9,7 +9,7 @@ public class OseroMethods {
         this.board = board;
     }
 
-    public int checkStone(int player){//playerが置ける場所が存在するかチェックし、あれば１、なければ０(bool型にしても良き)
+    public int checkStone(int player){//playerが置ける場所が存在するかチェックし、あれば１、なければ０
         int playerStone = 0, enemyStone = 0;
         int count = 0;
         if(player == 1){
