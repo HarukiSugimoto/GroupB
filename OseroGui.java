@@ -119,6 +119,8 @@ public class OseroGui {
                         cardLayout.show(containerPanel, "standby");
                     } else {
                         JFrame Error_frame = new JFrame();
+                        JButton button111 = new JButton("テスト");
+                        Error_frame.add(button111);
                         JOptionPane.showMessageDialog(Error_frame, "登録されていない，もしくはパスワードが違う");
                     }
                 }catch(IOException er){
@@ -332,7 +334,8 @@ public class OseroGui {
                         if((client.in.readLine()).equals("WIN")) flag = 2;
                         if((client.in.readLine()).equals("LOSE")) flag = 3;
                         if((client.in.readLine()).equals("DRAW")) flag = 4;
-
+                        osero_page.repaint();
+                        //ポップアップに勝ち負けかいてボタン作って画面戻る方が良さげ
 
                     }
                 } catch (IOException er) {
