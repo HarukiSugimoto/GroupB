@@ -120,7 +120,7 @@ public class OseroMethods {
                 }
             }
         }
-        System.out.println("黒 = " + black + " 白 = " + white);//デバッグ用
+        // System.out.println("黒 = " + black + " 白 = " + white);//デバッグ用
         if(black > white){
             return 1;//黒の勝ち
         } else if(black < white){
@@ -131,18 +131,11 @@ public class OseroMethods {
     }
 
     public int setStone(int player, int x, int y){ //駒を置く
-        // if((board[x][y].equals(black))||(board[x][y].equals(white))){//すでにコマがある場合
-        //     return -1;//置けなかったことを表す
-        // }
         if(player == 1){
             board[x][y] = 1; //黒
         } else if(player == 2){
             board[x][y] = 2; //白
         }
-        // } else{
-        //     System.out.println("プレイヤーの指定が間違っています");
-        //     return -1;
-        // }
         int count = reverseStone(player, x, y);
         if(count < 1){
             board[x][y] = 0;
@@ -255,16 +248,12 @@ public class OseroMethods {
     }
 
     public int PlayOsero(int player, int x, int y){
-        // while(true){
-        //     osero.setStone(1, x, y);
-        //     osero.setStone(2, x, y);
-        // }
         int check = setStone(player, x, y);
-        System.out.println(checkStone(player%2+1));//デバッグ用
-        System.out.println(scoreStone());//デバッグ用
-        return check;
+        // System.out.println(checkStone(player%2+1));//デバッグ用
+        // System.out.println(scoreStone());//デバッグ用
+        return check;//おけない：-1，置ける：0
     }
-     public int[][] get_Board(){
+    public int[][] get_Board(){
         return board;
-     }
+    }
 }

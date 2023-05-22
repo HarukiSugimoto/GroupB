@@ -2,6 +2,9 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.io.*;
+import java.awt.geom.Rectangle2D;
+import java.awt.font.FontRenderContext;
+
 public class OseroGui {
     static int width = 500;
     static int height = 550;
@@ -40,14 +43,14 @@ public class OseroGui {
     JPanel login_page;
     JPanel signup_page;
     JPanel standby_page;
-    JPanel osero_page;
+    Reversi osero_page;
     Timer timer;
+    int flag = 1;
 
     OseroGui(Client cl){
         client = cl;
         mainFrame = new JFrame("オセロアプリ");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // mainFrame.setSize(width, height);
         containerPanel = new JPanel();
         cardLayout = new CardLayout();
         containerPanel.setLayout(cardLayout);
@@ -62,9 +65,9 @@ public class OseroGui {
         containerPanel.add(standby_page, "standby");
         containerPanel.add(osero_page, "osero");
         mainFrame.getContentPane().add(containerPanel, BorderLayout.CENTER);
-        // mainFrame.pack();
         mainFrame.setVisible(true);
         mainFrame.setLocationRelativeTo(null);
+        mainFrame.setResizable(false);
     }
     public void first_page(){
         first_page = new JPanel();
@@ -181,11 +184,22 @@ public class OseroGui {
         standby_page.add(announce);
         standby_page.add(access);
     }
-    public class Reversi extends JPanel {    
+    public class Reversi extends JPanel {  
+        MouseProc mouseProc; 
         // コンストラクタ（初期化処理）
         public Reversi() {
-            setPreferredSize(new Dimension(WIDTH,HEIGHT));
-            addMouseListener(new MouseProc());
+            // setPreferredSize(new Dimension(WIDTH,HEIGHT));
+            mouseProc = new MouseProc();
+            addMouseListener(mouseProc);
+        }
+        public void disableMouseClickEvent() {
+            // removeMouseListener(getMouseListeners()[0]); // 一時的にマウスイベントを無効化
+            // removeMouseListener(mouseProc);
+            mainFrame.setEnabled(false);
+        }
+        public void enableMouseClickEvent(){
+            // addMouseListener(mouseProc);
+            mainFrame.setEnabled(true);
         }
      
         // 画面描画
@@ -220,6 +234,41 @@ public class OseroGui {
                     }
                 }
             }
+            if(!(flag == 0)){
+                Graphics2D g2d = (Graphics2D) g.create();
+                float alpha = 0.7f; // ぼかしの透明度（0.0から1.0の範囲）
+    
+                // ぼかしエリアの設定（例：四角形の領域）
+                int x = 0; // 左上のX座標
+                int y = 0; // 左上のY座標
+    
+    
+                // アルファコンポジットの設定
+                AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
+                g2d.setComposite(alphaComposite);
+    
+                // ぼかしエフェクトの描画
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2d.setColor(Color.WHITE);
+                g2d.fill(new Rectangle2D.Double(x, y, 500, 550));
+    
+                // アルファコンポジットをリセット
+                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
+                String text = "";
+                if(flag == 1) text = "相手のターン";
+                if(flag == 2) text = "WIN";
+                if(flag == 3) text = "LOSE";
+                if(flag == 4) text = "DRAW";
+                Font font = new Font("Arial", Font.BOLD, 40);
+                g2d.setFont(font);
+                FontRenderContext frc = g2d.getFontRenderContext();
+                Rectangle2D textBounds = font.getStringBounds(text, frc);
+                int textX = (int) (x + (500 - textBounds.getWidth()) / 2);
+                int textY = (int) (y + (550 - textBounds.getHeight()) / 2);
+                g2d.setColor(Color.BLACK);
+                g2d.drawString(text, textX, textY);
+                g2d.dispose();
+            }
         }
      
         // クリックされた時の処理用のクラス
@@ -239,7 +288,9 @@ public class OseroGui {
                     if(!(timer.isRunning())){
                         client.out.println(col);
                         client.out.println(row);
+                        flag = 1;
                         reload();
+                        disableMouseClickEvent();
                         timer.start();
                     }
                 }
@@ -272,17 +323,23 @@ public class OseroGui {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    while(!((client.in.readLine()).equals("STOP"))){
-                        return;
+                    if((client.in.readLine()).equals("START")){
+                        flag = 0;
+                        reload();
+                        timer.stop();          
+                        osero_page.enableMouseClickEvent();     
+                    }else if((client.in.readLine()).equals("FINISH")){
+                        if((client.in.readLine()).equals("WIN")) flag = 2;
+                        if((client.in.readLine()).equals("LOSE")) flag = 3;
+                        if((client.in.readLine()).equals("DRAW")) flag = 4;
+
+
                     }
-                    reload();
-                    timer.stop();
                 } catch (IOException er) {
                     // TODO: handle exception
                 }
             }
         });
         timer.start();
-
     }
 }
