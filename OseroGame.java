@@ -39,6 +39,7 @@ public class OseroGame{
             //     break;
             // }
             // if(check == 0){
+                System.out.printf("First check = %d\n", check);
                 thread.out.println("START");
                 send_board(player, thread);
                 try{
@@ -76,6 +77,7 @@ public class OseroGame{
                 // break;
             // }
             // if(check == 0){
+                System.out.printf("Second check = %d\n", check);
                 thread.out.println("START");
                 send_board(player, thread);
                 try{
