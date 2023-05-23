@@ -69,7 +69,7 @@ public class OseroMethods {
                         if(board[k][l] == enemyStone){
                             continue;
                         } else if(board[k][l] == 0){
-                            System.out.println("deb6");
+                            //System.out.println("deb6");
                             return 1;
                         }
                     }
@@ -77,7 +77,7 @@ public class OseroMethods {
                         if(board[i][k] == enemyStone){
                             continue;
                         } else if(board[i][k] == 0){
-                            System.out.println("deb7");
+                            // System.out.println("deb7");
                             return 1;
                         }
                     }
@@ -85,14 +85,14 @@ public class OseroMethods {
                         if(board[k][l] == enemyStone){
                             continue;
                         } else if(board[k][l] == 0){
-                            System.out.println("deb8");
+                            // System.out.println("deb8");
                             return 1;
                         }
                     }
                 }
             }
         }
-        System.out.println("deb");
+        // System.out.println("deb");
         return 0;//おける場所がない
     }
     public int scoreStone(){//駒の数を数える
@@ -106,7 +106,7 @@ public class OseroMethods {
                 }
             }
         }
-        // System.out.println("黒 = " + black + " 白 = " + white);//デバッグ用
+        System.out.println("黒 = " + black + " 白 = " + white);//デバッグ用
         if(black > white){
             return 1;//黒の勝ち
         } else if(black < white){
