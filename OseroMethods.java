@@ -10,7 +10,7 @@ public class OseroMethods {
     }
 
     public int checkStone(int player){//playerが置ける場所が存在するかチェックし、あれば１、なければ０
-        // System.out.println("deb0");
+        System.out.println("deb_start");
         int playerStone = 0, enemyStone = 0;
         int count = 0;
         if(player == 1){
@@ -25,74 +25,130 @@ public class OseroMethods {
                 if(board[i][j] == enemyStone){
                     continue;
                 } else if(board[i][j] == playerStone){
-                    for(int k = i-1; k > 0; k--){//上方向
+                    for(int k = i-1; k >= 0; k--){//上方向
                         if(board[k][j] == enemyStone){
+                            count++;
                             continue;
                         } else if(board[k][j] == 0){
-                            // System.out.println("deb1");
-                            return 1;
+                            if(count>0){
+                                System.out.println("deb1"+"@"+i+","+j);
+                                return 1;}
+                            break;
+                        }
+                        else {
+                            count=0;
+                            break;
                         }
                     }
-                    for(int k = i-1, l = j+1; k > 0 && l < board_size; k--, l++){//右上方向
+                    for(int k = i-1, l = j+1; k >= 0 && l < board_size; k--, l++){//右上方向
                         if(board[k][l] == enemyStone){
+                            count++;
                             continue;
                         } else if(board[k][l] == 0){
-                            // System.out.println("deb2");
-                            return 1;
+                            if(count>0){
+                                System.out.println("deb2"+"@"+i+","+j);
+                                return 1;}
+                            break;
+                        }
+                        else {
+                            count=0;
+                            break;
                         }
                     }
                     for(int k = j+1; k < board_size; k++){//右方向
                         if(board[i][k] == enemyStone){
+                            count++;
                             continue;
                         } else if(board[i][k] == 0){
-                            // System.out.println("deb3");
-                            return 1;
+                            if(count>0){
+                                System.out.println("deb3"+"@"+i+","+j);
+                                return 1;}
+                            break;
+                        }
+                        else {
+                            count=0;
+                            break;
                         }
                     }
                     for(int k = i+1, l = j+1; k < board_size && l < board_size; k++, l++){//右下方向
                         if(board[k][l] == enemyStone){
+                            count++;
                             continue;
                         } else if(board[k][l] == 0){
-                            // System.out.println("deb4");
-                            return 1;
+                            if(count>0){
+                                System.out.println("deb4"+"@"+i+","+j);
+                                return 1;}
+                            break;
+                        }
+                        else {
+                            count=0;
+                            break;
                         }
                     }
                     for(int k = i+1; k < board_size; k++){//下方向
                         if(board[k][j] == enemyStone){
+                            count++;
                             continue;
                         } else if(board[k][j] == 0){
-                            // System.out.println("deb5");
-                            return 1;
+                            if(count>0){
+                                System.out.println("deb5"+"@"+i+","+j);
+                                return 1;}
+                            break;
+                        }
+                        else {
+                            count=0;
+                            break;
                         }
                     }
-                    for(int k = i+1, l = j-1; k < board_size && l > 0; k++, l--){//左下方向
+                    for(int k = i+1, l = j-1; k < board_size && l >= 0; k++, l--){//左下方向
                         if(board[k][l] == enemyStone){
+                            count++;
                             continue;
                         } else if(board[k][l] == 0){
-                            //System.out.println("deb6");
-                            return 1;
+                            if(count>0){
+                                System.out.println("deb6"+"@"+i+","+j);
+                                return 1;}
+                            break;
+                        }
+                        else {
+                            count=0;
+                            break;
                         }
                     }
-                    for(int k = j-1; k > 0; k--){//左方向
+                    for(int k = j-1; k >= 0; k--){//左方向
                         if(board[i][k] == enemyStone){
+                            count++;
                             continue;
                         } else if(board[i][k] == 0){
-                            // System.out.println("deb7");
-                            return 1;
+                            if(count>0){
+                                System.out.println("deb7"+"@"+i+","+j);
+                                return 1;}
+                            break;
+                        }
+                        else {
+                            count=0;
+                            break;
                         }
                     }
-                    for(int k = i-1, l = j-1; k > 0 && l > 0; k--, l--){//左上方向
+                    for(int k = i-1, l = j-1; k >= 0 && l >= 0; k--, l--){//左上方向
                         if(board[k][l] == enemyStone){
+                            count++;
                             continue;
                         } else if(board[k][l] == 0){
-                            // System.out.println("deb8");
-                            return 1;
+                            if(count>0){
+                                System.out.println("deb8"+"@"+i+","+j);
+                                return 1;}
+                            break;
+                        }
+                        else {
+                            count=0;
+                            break;
                         }
                     }
                 }
             }
         }
-        // System.out.println("deb");
+        System.out.println("deb_end");
         return 0;//おける場所がない
     }
     public int scoreStone(){//駒の数を数える
@@ -140,7 +196,7 @@ public class OseroMethods {
             playerStone = 2;
             enemyStone = 1;
         }
-        for(int i = x-1; i > 0; i--){//上方向の駒をひっくり返す
+        for(int i = x-1; i >= 0; i--){//上方向の駒をひっくり返す
             if(board[i][y] == enemyStone){
                 continue;
             }else if(board[i][y] ==playerStone){
@@ -151,7 +207,7 @@ public class OseroMethods {
             }
             break;
         }
-        for(int i = x-1, j = y+1; i > 0 && j < board_size; i--, j++){//右上方向の駒をひっくり返す
+        for(int i = x-1, j = y+1; i >= 0 && j < board_size; i--, j++){//右上方向の駒をひっくり返す
             if(board[i][j] == enemyStone){
                 continue;
             }else if(board[i][j] == playerStone){
@@ -195,7 +251,7 @@ public class OseroMethods {
             }
             break;
         }
-        for(int i = x+1, j = y-1; i < board_size && j > 0; i++, j--){//左下方向の駒をひっくり返す
+        for(int i = x+1, j = y-1; i < board_size && j >= 0; i++, j--){//左下方向の駒をひっくり返す
 
             if(board[i][j] == enemyStone){
                 continue;
@@ -207,7 +263,7 @@ public class OseroMethods {
             }
             break;
         }
-        for(int i = y-1; i > 0; i--){//左方向の駒をひっくり返す
+        for(int i = y-1; i >= 0; i--){//左方向の駒をひっくり返す
             if(board[x][i] == enemyStone){
                 continue;
             }else if(board[x][i] == playerStone){
@@ -218,7 +274,7 @@ public class OseroMethods {
             }
             break;
         }
-        for(int i = x-1, j = y-1; i > 0 && j > 0; i--, j--){//左上方向の駒をひっくり返す
+        for(int i = x-1, j = y-1; i >= 0 && j >= 0; i--, j--){//左上方向の駒をひっくり返す
 
             if(board[i][j] == enemyStone){
                 continue;
