@@ -14,6 +14,16 @@ public class OseroGame{
         {0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0},
     };
+    // int board[][] = {
+    //     {0,2,1,2,1,2,1,1},
+    //     {2,1,1,2,2,2,2,2},
+    //     {2,2,1,2,2,1,2,1},
+    //     {2,2,1,1,2,1,2,1},
+    //     {2,2,1,2,1,1,2,1},
+    //     {2,1,1,2,2,1,2,2},
+    //     {2,2,2,2,2,1,0,0},
+    //     {2,2,2,2,2,1,0,0},
+    // };
     OseroMethods osero = new OseroMethods(board);
     int flag = 0;
 
@@ -33,13 +43,14 @@ public class OseroGame{
         thread.out.println("先攻");
         while(true){
             int check = check(player);
-            // if(check == -1) change_turn();
-            // if(check == 1){
-            //     notify();
-            //     break;
-            // }
-            // if(check == 0){
-                System.out.printf("First check = %d\n", check);
+            if(check == -1){
+                change_turn();
+            } 
+            if(check == 1){
+                notify();
+                break;
+            }
+            if(check == 0){
                 thread.out.println("START");
                 send_board(player, thread);
                 try{
@@ -54,9 +65,9 @@ public class OseroGame{
                 send_board(player, thread);
                 if(flag == -1) continue;
                 change_turn();
-            // }
+            }
         }
-        // finish_game(player, thread);
+        finish_game(player, thread);
     }
 
     public synchronized void SecondAttack(ServerThread thread) throws IOException{ //後攻
@@ -71,13 +82,14 @@ public class OseroGame{
         change_turn();
         while(true){
             int check = check(player);
-            // if(check == -1) change_turn();
-            // if(check == 1){
-            //     notify();
-                // break;
-            // }
-            // if(check == 0){
-                System.out.printf("Second check = %d\n", check);
+            if(check == -1) {
+                change_turn();
+            }
+            if(check == 1){
+                notify();
+                break;
+            }
+            if(check == 0){
                 thread.out.println("START");
                 send_board(player, thread);
                 try{
@@ -91,9 +103,9 @@ public class OseroGame{
                 send_board(player, thread);
                 if(flag == -1) continue;
                 change_turn();
-            // }
+            }
         }
-        // finish_game(player, thread);
+        finish_game(player, thread);
 
     }
 
@@ -126,9 +138,10 @@ public class OseroGame{
             }
         }
     }
+
+    int pass_flag = 0;
     public int check(int player){
-        int pass_flag = 0;
-        System.out.println(osero.checkStone(player));
+        // System.out.printf("Player %d 's checkStone = %d\n", player, osero.checkStone(player));
         if(pass_flag == 2) return 1;
         if(osero.checkStone(player)==0){
             pass_flag++;
@@ -145,6 +158,7 @@ public class OseroGame{
     public void finish_game(int player, ServerThread thread){
         int score = osero.scoreStone();
         thread.out.println("FINISH");
+        send_board(player, thread);
         if(score == 0){
             //引き分け
             thread.out.println("DRAW");

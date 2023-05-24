@@ -11,8 +11,16 @@ public class OseroMethods {
 
     public int checkStone(int player){//playerが置ける場所が存在するかチェックし、あれば１、なければ０
         System.out.println("deb_start");
+        for(int i = 0; i < board_size; i++){
+            for(int k = 0; k < board_size; k++){
+                if(board[i][k] == 3){
+                    board[i][k] = 0;
+                }
+            }
+        }
         int playerStone = 0, enemyStone = 0;
         int count = 0;
+        int flag = 0;
         if(player == 1){
             playerStone = 1;
             enemyStone = 2;
@@ -32,7 +40,12 @@ public class OseroMethods {
                         } else if(board[k][j] == 0){
                             if(count>0){
                                 System.out.println("deb1"+"@"+i+","+j);
-                                return 1;}
+                                System.out.println("deb1"+"@"+k+","+j);
+                                flag = 1;
+                                board[k][j] = 3;
+                                count = 0;
+                                // return 1;
+                            }
                             break;
                         }
                         else {
@@ -47,7 +60,12 @@ public class OseroMethods {
                         } else if(board[k][l] == 0){
                             if(count>0){
                                 System.out.println("deb2"+"@"+i+","+j);
-                                return 1;}
+                                System.out.println("deb2"+"@"+k+","+l);
+                                flag = 1;
+                                board[k][l] = 3;
+                                count = 0;
+                                // return 1;
+                            }
                             break;
                         }
                         else {
@@ -62,7 +80,12 @@ public class OseroMethods {
                         } else if(board[i][k] == 0){
                             if(count>0){
                                 System.out.println("deb3"+"@"+i+","+j);
-                                return 1;}
+                                System.out.println("deb3"+"@"+i+","+k);
+                                // return 1;
+                                flag = 1;
+                                board[i][k] = 3;
+                                count = 0;
+                            }
                             break;
                         }
                         else {
@@ -77,7 +100,12 @@ public class OseroMethods {
                         } else if(board[k][l] == 0){
                             if(count>0){
                                 System.out.println("deb4"+"@"+i+","+j);
-                                return 1;}
+                                System.out.println("deb4"+"@"+k+","+l);
+                                // return 1;
+                                flag = 1;
+                                board[k][l] = 3;
+                                count = 0;
+                            }
                             break;
                         }
                         else {
@@ -92,7 +120,12 @@ public class OseroMethods {
                         } else if(board[k][j] == 0){
                             if(count>0){
                                 System.out.println("deb5"+"@"+i+","+j);
-                                return 1;}
+                                System.out.println("deb5"+"@"+k+","+j);
+                                // return 1;
+                                flag = 1;
+                                board[k][j] = 3;
+                                count = 0;
+                            }
                             break;
                         }
                         else {
@@ -107,7 +140,12 @@ public class OseroMethods {
                         } else if(board[k][l] == 0){
                             if(count>0){
                                 System.out.println("deb6"+"@"+i+","+j);
-                                return 1;}
+                                System.out.println("deb6"+"@"+k+","+l);
+                                // return 1;
+                                flag = 1;
+                                board[k][l] = 3;
+                                count = 0;
+                            }
                             break;
                         }
                         else {
@@ -122,7 +160,12 @@ public class OseroMethods {
                         } else if(board[i][k] == 0){
                             if(count>0){
                                 System.out.println("deb7"+"@"+i+","+j);
-                                return 1;}
+                                System.out.println("deb7"+"@"+i+","+k);
+                                // return 1;
+                                flag = 1;
+                                board[i][k] = 3;
+                                count = 0;
+                            }
                             break;
                         }
                         else {
@@ -137,7 +180,12 @@ public class OseroMethods {
                         } else if(board[k][l] == 0){
                             if(count>0){
                                 System.out.println("deb8"+"@"+i+","+j);
-                                return 1;}
+                                System.out.println("deb8"+"@"+k+","+l);
+                                // return 1;
+                                flag = 1;
+                                board[k][l] = 3;
+                                count = 0;
+                            }
                             break;
                         }
                         else {
@@ -149,7 +197,12 @@ public class OseroMethods {
             }
         }
         System.out.println("deb_end");
-        return 0;//おける場所がない
+        if(flag == 1){
+            return 1;
+        }else{
+            return 0;//おける場所がない
+
+        }
     }
     public int scoreStone(){//駒の数を数える
         int black = 1, white = 2;

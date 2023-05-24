@@ -229,10 +229,14 @@ public class OseroGui {
                     if (board[i][j] != 0) {
                         if (board[i][j] == 1) {
                             g.setColor(Color.black);
-                        } else {
+                            g.fillOval(x+cs/10, y+cs/10, cs*8/10, cs*8/10);
+                        } else if(board[i][j] == 2){
                             g.setColor(Color.white);
+                            g.fillOval(x+cs/10, y+cs/10, cs*8/10, cs*8/10);
+                        }else{
+                            g.setColor(Color.red);
+                            g.fillOval(x+cs*3/10, y+cs*3/10, cs*2/5, cs*2/5);
                         }
-                        g.fillOval(x+cs/10, y+cs/10, cs*8/10, cs*8/10);
                     }
                 }
             }
@@ -286,7 +290,7 @@ public class OseroGui {
                 // クリックされたマスを特定
                 int row = (y - tm) / cs;
                 int col = (x - lm) / cs;
-                if (board[row][col] == 0) {
+                if (board[row][col] == 3) {
                     if(!(timer.isRunning())){
                         client.out.println(col);
                         client.out.println(row);
@@ -325,15 +329,19 @@ public class OseroGui {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    if((client.in.readLine()).equals("START")){
+                    String command = client.in.readLine();
+                    if(command.equals("START")){
                         flag = 0;
                         reload();
                         timer.stop();          
                         osero_page.enableMouseClickEvent();     
-                    }else if((client.in.readLine()).equals("FINISH")){
-                        if((client.in.readLine()).equals("WIN")) flag = 2;
-                        if((client.in.readLine()).equals("LOSE")) flag = 3;
-                        if((client.in.readLine()).equals("DRAW")) flag = 4;
+                    }else if(command.equals("FINISH")){
+                        System.out.println("FINISH");
+                        reload();
+                        String judge = client.in.readLine();
+                        if(judge.equals("WIN")) flag = 2;
+                        if(judge.equals("LOSE")) flag = 3;
+                        if(judge.equals("DRAW")) flag = 4;
                         osero_page.repaint();
                         //ポップアップに勝ち負けかいてボタン作って画面戻る方が良さげ
 
