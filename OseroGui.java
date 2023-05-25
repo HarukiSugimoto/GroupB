@@ -47,6 +47,12 @@ public class OseroGui {
     OseroGui(Client cl){
         client = cl;
         mainFrame = new JFrame("オセロアプリ");
+        mainFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                finishGame();
+            }
+        });
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         containerPanel = new JPanel();
         cardLayout = new CardLayout();
@@ -178,7 +184,6 @@ public class OseroGui {
                 announce.setText("対戦相手検索中");
                 announce.paintImmediately( announce.getVisibleRect());
                 GameStart();
-                
             }
         });
         standby_page.add(announce);
@@ -203,7 +208,7 @@ public class OseroGui {
         int trout_size = 50;  //マスのサイズ
         public void paintComponent(Graphics g) {
             // 背景
-            g.setColor(Color.gray);
+            g.setColor(new Color(220,220,220));
             g.fillRect(0, 0, 500, 550);
             g.setColor(Color.BLACK);
             g.drawString("対戦相手：" + partner + "     戦績："+ (win + lose) +"戦"+ win +"勝" + lose +"負", 0, 30);
@@ -334,7 +339,6 @@ public class OseroGui {
                         timer.stop();          
                         osero_page.enableMouseClickEvent();     
                     }else if(command.equals("FINISH")){
-                        System.out.println("FINISH");
                         reload();
                         String judge = client.in.readLine();
                         if(judge.equals("WIN")) flag = 2;
@@ -343,19 +347,23 @@ public class OseroGui {
                         osero_page.repaint();
                         //ポップアップに勝ち負けかいてボタン作って画面戻る方が良さげ
                         Object[] options = {"もう1度ゲームをする", "アプリを終了する"};
-                        int choice = JOptionPane.showOptionDialog(mainFrame, judge, "ゲーム終了",
+                        JPanel judge_panel = new JPanel();
+                        judge_panel.setLayout(new GridBagLayout());
+                        JLabel label = new JLabel(judge);
+                        label.setFont(label.getFont().deriveFont(Font.BOLD, 20f)); // フォントサイズを変更
+                        label.setHorizontalAlignment(SwingConstants.CENTER); // テキストを中央に配置
+        
+                        judge_panel.add(label);
+                        int choice = JOptionPane.showOptionDialog(mainFrame, judge_panel, "ゲーム終了",
                                 JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
                         if (choice == 0) {
-                            mainFrame.setSize(170, 100);
-                            cardLayout.removeLayoutComponent(standby_page);
-                            standby_page();
-                            containerPanel.add(standby_page, "standby");
-                            cardLayout.show(containerPanel, "standby");
-                            timer.stop();
+                            reset();
                             return;
                         } else if (choice == 1) {
-                            //pass
+                            finishGame();
+                            System.exit(0);
+                            return;
                         }
                             
 
@@ -367,5 +375,31 @@ public class OseroGui {
         });
         timer.start();
 
+    }
+    public void reset(){
+        mainFrame.setSize(170, 100);
+        announce.setText("　　　　　　　");
+        cardLayout.show(containerPanel, "standby");
+        timer.stop();
+        mainFrame.setEnabled(true);
+        flag = 1;
+        board = new int[][]{
+            {0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0},
+            {0,0,0,1,2,0,0,0},
+            {0,0,0,2,1,0,0,0},
+            {0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0},
+        };
+
+    }
+    public void finishGame(){
+        client.out.println("finish");
+        try {
+            client.socket.close();
+        } catch (IOException e1) {
+        }
     }
 }

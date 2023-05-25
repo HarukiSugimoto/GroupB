@@ -7,7 +7,7 @@ public class Client {
     BufferedReader in;
     PrintWriter out;
 
-    Client() throws IOException{
+    Client() throws IOException {
         this.addr = InetAddress.getByName("localhost");
         this.PORT = 8080;
         this.socket = new Socket(addr, PORT);

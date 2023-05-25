@@ -10,12 +10,13 @@ public class ServerThread extends Thread {
     String[] record;
     int win;
     int lose;
+    boolean flag = true;
 
     static int num_thread = 0; //全スレッド共通の値にしたいのでstatic
     static OseroGame room;
 
     ServerThread(Socket socket) throws IOException{
-        System.out.println("スレッドが立ち上がりました");
+        System.out.println("スレッドが立ち上がりました(ID:"+this.getId()+")");
         this.socket = socket;
 
     }
@@ -145,6 +146,10 @@ public class ServerThread extends Thread {
                     }
 
                 }
+            }else if(command.equals("finish")){
+                socket.close();
+                flag = false;
+                System.out.println("スレッドが終了しました(ID:"+this.getId()+")");
             }
         }catch (IOException e){
             System.out.println("ERROR in recived");
@@ -154,7 +159,7 @@ public class ServerThread extends Thread {
     public void run(){
         try{
             get_inout();
-            while(true){
+            while(flag){
                 received();
             }
         }catch(IOException e){
