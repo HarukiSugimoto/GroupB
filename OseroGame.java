@@ -4,33 +4,31 @@ import java.util.Arrays;
 
 public class OseroGame{
     ServerThread interchange;//この値を交互で変更していくことでデータのやり取りをする
-    int board[][] = {
-        {0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0},
-        {0,0,0,1,2,0,0,0},
-        {0,0,0,2,1,0,0,0},
-        {0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0},
-    };
     // int board[][] = {
-    //     {0,2,1,2,1,2,1,1},
-    //     {2,1,1,2,2,2,2,2},
-    //     {2,2,1,2,2,1,2,1},
-    //     {2,2,1,1,2,1,2,1},
-    //     {2,2,1,2,1,1,2,1},
-    //     {2,1,1,2,2,1,2,2},
-    //     {2,2,2,2,2,1,0,0},
-    //     {2,2,2,2,2,1,0,0},
+    //     {0,0,0,0,0,0,0,0},
+    //     {0,0,0,0,0,0,0,0},
+    //     {0,0,0,0,0,0,0,0},
+    //     {0,0,0,1,2,0,0,0},
+    //     {0,0,0,2,1,0,0,0},
+    //     {0,0,0,0,0,0,0,0},
+    //     {0,0,0,0,0,0,0,0},
+    //     {0,0,0,0,0,0,0,0},
     // };
+    int board[][] = {
+        {0,2,1,2,1,2,1,1},
+        {2,1,1,2,2,2,2,2},
+        {2,2,1,2,2,1,2,1},
+        {2,2,1,1,2,1,2,1},
+        {2,2,1,2,1,1,2,1},
+        {2,1,1,2,2,1,2,2},
+        {2,2,2,2,2,1,0,0},
+        {2,2,2,2,2,1,0,0},
+    };
     OseroMethods osero = new OseroMethods(board);
     int flag = 0;
 
     public synchronized void FirstAttack(ServerThread thread){ //先攻
         int player = 1;
-        System.out.printf("%s(先攻)者参加", thread.username);
-        System.out.println("");
         send(thread);
         try{
             wait();
@@ -38,8 +36,11 @@ public class OseroGame{
             System.out.println("ERROR in FirstAttack");
         }
         ServerThread partner_thread = get();
-        String partner_name = partner_thread.username;
-        thread.out.println(partner_name);
+        thread.out.println(partner_thread.username); //対戦相手の名前を送信
+        //対戦相手の戦績を送信
+        thread.out.println(partner_thread.win); 
+        thread.out.println(partner_thread.lose); 
+
         thread.out.println("先攻");
         while(true){
             int check = check(player);
@@ -72,11 +73,12 @@ public class OseroGame{
 
     public synchronized void SecondAttack(ServerThread thread) throws IOException{ //後攻
         int player = 2;
-        System.out.printf("%s(後攻)者参加", thread.username);
-        System.out.println("");
         ServerThread partner_thread = get();
-        String partner_name = partner_thread.username;
-        thread.out.println(partner_name);
+        thread.out.println(partner_thread.username); //対戦相手の名前を送信
+        //対戦相手の戦績を送信
+        thread.out.println(partner_thread.win); 
+        thread.out.println(partner_thread.lose);
+
         thread.out.println("後攻");
         send(thread);
         change_turn();

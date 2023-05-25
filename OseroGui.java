@@ -6,11 +6,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.font.FontRenderContext;
 
 public class OseroGui {
-    static int width = 500;
-    static int height = 550;
-    int lm = 50;    // 左側余白
-    int tm = 100;   // 上側余白
-    int cs = 50;  //マスのサイズ
     CardLayout cardLayout;
     JPanel containerPanel;
     JFrame mainFrame;
@@ -27,6 +22,8 @@ public class OseroGui {
     JLabel announce;
     String partner = "";
     String turn = "";
+    int win = 0;
+    int lose = 0;
     JButton button1;
     JButton button2;
     JButton button3;
@@ -181,6 +178,7 @@ public class OseroGui {
                 announce.setText("対戦相手検索中");
                 announce.paintImmediately( announce.getVisibleRect());
                 GameStart();
+                
             }
         });
         standby_page.add(announce);
@@ -190,27 +188,25 @@ public class OseroGui {
         MouseProc mouseProc; 
         // コンストラクタ（初期化処理）
         public Reversi() {
-            // setPreferredSize(new Dimension(WIDTH,HEIGHT));
-            mouseProc = new MouseProc();
-            addMouseListener(mouseProc);
+            addMouseListener(new MouseProc());
         }
         public void disableMouseClickEvent() {
-            // removeMouseListener(getMouseListeners()[0]); // 一時的にマウスイベントを無効化
-            // removeMouseListener(mouseProc);
             mainFrame.setEnabled(false);
         }
         public void enableMouseClickEvent(){
-            // addMouseListener(mouseProc);
             mainFrame.setEnabled(true);
         }
      
         // 画面描画
+        int left_margin = 50;    // 左側余白
+        int top_margin = 100;   // 上側余白
+        int trout_size = 50;  //マスのサイズ
         public void paintComponent(Graphics g) {
             // 背景
             g.setColor(Color.gray);
-            g.fillRect(0, 0, WIDTH, HEIGHT);
+            g.fillRect(0, 0, 500, 550);
             g.setColor(Color.BLACK);
-            g.drawString("対戦相手：" + partner, 0, 30);
+            g.drawString("対戦相手：" + partner + "     戦績："+ (win + lose) +"戦"+ win +"勝" + lose +"負", 0, 30);
             g.drawString("あなたは" + turn + "です", 0, 50);
             if(turn.equals("先攻")){
                 g.drawString("あなたは黒石です", 0, 70);
@@ -219,30 +215,30 @@ public class OseroGui {
             }
             // 盤面描画
             for (int i = 0; i < 8; i++) {
-                int y = tm + cs * i;
+                int y = top_margin + trout_size * i;
                 for (int j = 0; j < 8; j++) {
-                    int x = lm + cs * j;
+                    int x = left_margin + trout_size * j;
                     g.setColor(new Color(0, 170, 0));
-                    g.fillRect(x, y, cs, cs);
+                    g.fillRect(x, y, trout_size, trout_size);
                     g.setColor(Color.black);
-                    g.drawRect(x, y, cs, cs);
+                    g.drawRect(x, y, trout_size, trout_size);
                     if (board[i][j] != 0) {
                         if (board[i][j] == 1) {
                             g.setColor(Color.black);
-                            g.fillOval(x+cs/10, y+cs/10, cs*8/10, cs*8/10);
+                            g.fillOval(x+trout_size/10, y+trout_size/10, trout_size*8/10, trout_size*8/10);
                         } else if(board[i][j] == 2){
                             g.setColor(Color.white);
-                            g.fillOval(x+cs/10, y+cs/10, cs*8/10, cs*8/10);
+                            g.fillOval(x+trout_size/10, y+trout_size/10, trout_size*8/10, trout_size*8/10);
                         }else{
                             g.setColor(Color.red);
-                            g.fillOval(x+cs*3/10, y+cs*3/10, cs*2/5, cs*2/5);
+                            g.fillOval(x+trout_size*3/10, y+trout_size*3/10, trout_size*2/5, trout_size*2/5);
                         }
                     }
                 }
             }
             if(!(flag == 0)){
                 Graphics2D g2d = (Graphics2D) g.create();
-                float alpha = 0.7f; // ぼかしの透明度（0.0から1.0の範囲）
+                float alpha = 0.5f; // ぼかしの透明度（0.0から1.0の範囲）
     
                 // ぼかしエリアの設定（例：四角形の領域）
                 int x = 0; // 左上のX座標
@@ -283,13 +279,13 @@ public class OseroGui {
                 int x = e.getX();
                 int y = e.getY();
                 // 盤の外側がクリックされたときは何もしないで終了
-                if (x < lm) return;
-                if (x >= lm+cs*8) return;
-                if (y < tm) return;
-                if (y >= tm+cs*8) return;
+                if (x < left_margin) return;
+                if (x >= left_margin+trout_size*8) return;
+                if (y < top_margin) return;
+                if (y >= top_margin+trout_size*8) return;
                 // クリックされたマスを特定
-                int row = (y - tm) / cs;
-                int col = (x - lm) / cs;
+                int row = (y - top_margin) / trout_size;
+                int col = (x - left_margin) / trout_size;
                 if (board[row][col] == 3) {
                     if(!(timer.isRunning())){
                         client.out.println(col);
@@ -319,6 +315,8 @@ public class OseroGui {
         client.out.println("gamestart"); 
         try{
             partner = client.in.readLine();
+            win = Integer.parseInt(client.in.readLine());
+            lose = Integer.parseInt(client.in.readLine());
             turn = client.in.readLine();
         }catch(IOException e){
             
@@ -344,6 +342,22 @@ public class OseroGui {
                         if(judge.equals("DRAW")) flag = 4;
                         osero_page.repaint();
                         //ポップアップに勝ち負けかいてボタン作って画面戻る方が良さげ
+                        Object[] options = {"もう1度ゲームをする", "アプリを終了する"};
+                        int choice = JOptionPane.showOptionDialog(mainFrame, judge, "ゲーム終了",
+                                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+
+                        if (choice == 0) {
+                            mainFrame.setSize(170, 100);
+                            cardLayout.removeLayoutComponent(standby_page);
+                            standby_page();
+                            containerPanel.add(standby_page, "standby");
+                            cardLayout.show(containerPanel, "standby");
+                            timer.stop();
+                            return;
+                        } else if (choice == 1) {
+                            //pass
+                        }
+                            
 
                     }
                 } catch (IOException er) {
@@ -352,5 +366,6 @@ public class OseroGui {
             }
         });
         timer.start();
+
     }
 }

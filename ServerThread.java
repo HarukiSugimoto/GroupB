@@ -7,6 +7,9 @@ public class ServerThread extends Thread {
     BufferedReader in;
     PrintWriter out;
     String username = "";
+    String[] record;
+    int win;
+    int lose;
 
     static int num_thread = 0; //全スレッド共通の値にしたいのでstatic
     static OseroGame room;
@@ -20,37 +23,75 @@ public class ServerThread extends Thread {
         this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
         num_thread++;
-        System.out.printf("aaa:%d", num_thread);
-        System.out.println("");
     }
 
-    public synchronized void login(String name, String pass) throws FileNotFoundException, IOException{
+    // public synchronized void login(String name, String pass) throws FileNotFoundException, IOException{
+    //     int flag = 1;
+    //     try (BufferedReader usersdata = new BufferedReader(new InputStreamReader(new FileInputStream("./userdata.csv")))) {
+    //         String userdata;
+    //         while((userdata = usersdata.readLine()) != null){
+    //             String[] user = userdata.split(",", 0);
+    //             if(user[0].equals(name)){
+    //                 if(user[1].equals(pass)){
+    //                     flag = 0;
+    //                     this.out.println("SUCCESS");
+    //                     record = user[2].split(":");
+    //                     win = Integer.parseInt(record[0]); //勝った回数
+    //                     lose = Integer.parseInt(record[1]); //負けた回数
+    //                     username = name;
+    //                     usersdata.close();
+    //                 }else{
+    //                     System.out.println("pass違う");
+    //                     this.out.println("ERROR in login pass");
+    //                     usersdata.close();
+    //                 }
+                    
+    //             }
+    //         }
+    //         if (flag == 1){
+    //             System.out.println("登録無し");
+    //             this.out.println("ERROR in login name");
+    //             usersdata.close();
+    //         }
+    //     }
+    // } 
+    public synchronized void login(String name, String pass) {
         int flag = 1;
         try (BufferedReader usersdata = new BufferedReader(new InputStreamReader(new FileInputStream("./userdata.csv")))) {
             String userdata;
-            while((userdata = usersdata.readLine()) != null){
+            while ((userdata = usersdata.readLine()) != null) {
                 String[] user = userdata.split(",", 0);
-                if(user[0].equals(name)){
-                    if(user[1].equals(pass)){
+                if (user[0].equals(name)) {
+                    if (user[1].equals(pass)) {
                         flag = 0;
                         this.out.println("SUCCESS");
+                        record = user[2].split(":");
+                        win = Integer.parseInt(record[0]); //勝った回数
+                        lose = Integer.parseInt(record[1]); //負けた回数
                         username = name;
-                        usersdata.close();
-                    }else{
-                        System.out.println("pass違う");
+                        break; // ユーザーが見つかったのでループを終了
+                    } else {
+                        System.out.println("パスワードが一致しません");
                         this.out.println("ERROR in login pass");
                         usersdata.close();
+                        return; // パスワードが一致しないため、メソッドを終了
                     }
-                    
                 }
             }
-            if (flag == 1){
-                System.out.println("登録無し");
+            if (flag == 1) {
+                System.out.println("ユーザーが見つかりません");
                 this.out.println("ERROR in login name");
-                usersdata.close();
             }
+            usersdata.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("userdata.csv ファイルが見つかりません");
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("入出力エラーが発生しました");
+            e.printStackTrace();
         }
-    } 
+    }
+    
 
     public synchronized void signup(String name, String pass){
         int flag = 0; //nameが存在すれば1，しなければ0
@@ -80,7 +121,7 @@ public class ServerThread extends Thread {
         }
     }
     static int wait_player = 0; //0:待機あり，1：待機なし
-    public void recived(){ //ユーザーからの受け取り
+    public void received(){ //ユーザーからの受け取り
         try{
             String command = this.in.readLine();
             if (command.equals("login")){
@@ -107,13 +148,14 @@ public class ServerThread extends Thread {
             }
         }catch (IOException e){
             System.out.println("ERROR in recived");
+            e.printStackTrace();
         }
     }
     public void run(){
         try{
             get_inout();
             while(true){
-                recived();
+                received();
             }
         }catch(IOException e){
             System.out.println("Error in run");

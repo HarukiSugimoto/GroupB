@@ -53,6 +53,7 @@ public class OseroMethods {
                             break;
                         }
                     }
+                    count = 0;
                     for(int k = i-1, l = j+1; k >= 0 && l < board_size; k--, l++){//右上方向
                         if(board[k][l] == enemyStone){
                             count++;
@@ -73,6 +74,7 @@ public class OseroMethods {
                             break;
                         }
                     }
+                    count = 0;
                     for(int k = j+1; k < board_size; k++){//右方向
                         if(board[i][k] == enemyStone){
                             count++;
@@ -93,6 +95,7 @@ public class OseroMethods {
                             break;
                         }
                     }
+                    count = 0;
                     for(int k = i+1, l = j+1; k < board_size && l < board_size; k++, l++){//右下方向
                         if(board[k][l] == enemyStone){
                             count++;
@@ -113,6 +116,7 @@ public class OseroMethods {
                             break;
                         }
                     }
+                    count = 0;
                     for(int k = i+1; k < board_size; k++){//下方向
                         if(board[k][j] == enemyStone){
                             count++;
@@ -133,6 +137,7 @@ public class OseroMethods {
                             break;
                         }
                     }
+                    count = 0;
                     for(int k = i+1, l = j-1; k < board_size && l >= 0; k++, l--){//左下方向
                         if(board[k][l] == enemyStone){
                             count++;
@@ -153,6 +158,7 @@ public class OseroMethods {
                             break;
                         }
                     }
+                    count = 0;
                     for(int k = j-1; k >= 0; k--){//左方向
                         if(board[i][k] == enemyStone){
                             count++;
@@ -173,6 +179,7 @@ public class OseroMethods {
                             break;
                         }
                     }
+                    count = 0;
                     for(int k = i-1, l = j-1; k >= 0 && l >= 0; k--, l--){//左上方向
                         if(board[k][l] == enemyStone){
                             count++;
