@@ -20,10 +20,15 @@ public class OseroGui {
         {0,0,0,0,0,0,0,0},
     };
     JLabel announce;
+    JLabel record;
     String partner = "";
     String turn = "";
     int win = 0;
     int lose = 0;
+    int draw = 0; //*引き分けの場合もあるから追加
+    int partner_win = 0;
+    int partner_lose = 0;
+    int partner_draw = 0; //*引き分けの場合もあるから追加
     JButton button1;
     JButton button2;
     JButton button3;
@@ -118,12 +123,14 @@ public class OseroGui {
                 try{
                     String ans = client.in.readLine();
                     if(ans.equals("SUCCESS")){
-                        mainFrame.setSize(170, 100);
+                        win = Integer.parseInt(client.in.readLine());
+                        lose = Integer.parseInt(client.in.readLine());
+                        draw = Integer.parseInt(client.in.readLine());
+                        record.setText("戦績："+ (win + lose + draw) +"戦"+ win +"勝" + lose +"負" + draw + "引");
+                        mainFrame.setSize(170, 120);
                         cardLayout.show(containerPanel, "standby");
                     } else {
                         JFrame Error_frame = new JFrame();
-                        JButton button111 = new JButton("テスト");
-                        Error_frame.add(button111);
                         JOptionPane.showMessageDialog(Error_frame, "登録されていない，もしくはパスワードが違う");
                     }
                 }catch(IOException er){
@@ -157,7 +164,11 @@ public class OseroGui {
                 try{
                     String ans = client.in.readLine();
                     if(ans.equals("SUCCESS")){
-                        mainFrame.setSize(170, 100);
+                        win = Integer.parseInt(client.in.readLine());
+                        lose = Integer.parseInt(client.in.readLine());
+	                    draw = Integer.parseInt(client.in.readLine()); //*引き分けの場合もあるから追加
+                        record.setText("戦績："+ (win + lose + draw) +"戦"+ win +"勝" + lose +"負" + draw + "引");
+                        mainFrame.setSize(170,120);
                         cardLayout.show(containerPanel, "standby");
                     } else {
                         JFrame Error_frame = new JFrame();
@@ -176,6 +187,7 @@ public class OseroGui {
     }
     public void standby_page(){
         standby_page = new JPanel();
+        record = new JLabel();
         announce = new JLabel("　　　　　　　");//とりまこれで動いたからそのまま
         access = new JButton("接続");
         access.addActionListener(new ActionListener(){
@@ -186,20 +198,15 @@ public class OseroGui {
                 GameStart();
             }
         });
+        standby_page.add(record);
         standby_page.add(announce);
         standby_page.add(access);
     }
     public class Reversi extends JPanel {  
         MouseProc mouseProc; 
         // コンストラクタ（初期化処理）
-        public Reversi() {
+        Reversi() {
             addMouseListener(new MouseProc());
-        }
-        public void disableMouseClickEvent() {
-            mainFrame.setEnabled(false);
-        }
-        public void enableMouseClickEvent(){
-            mainFrame.setEnabled(true);
         }
      
         // 画面描画
@@ -211,12 +218,13 @@ public class OseroGui {
             g.setColor(new Color(220,220,220));
             g.fillRect(0, 0, 500, 550);
             g.setColor(Color.BLACK);
-            g.drawString("対戦相手：" + partner + "     戦績："+ (win + lose) +"戦"+ win +"勝" + lose +"負", 0, 30);
-            g.drawString("あなたは" + turn + "です", 0, 50);
+            g.drawString("対戦相手：" + partner, 0, 20); //* 戦績："+ (win + lose) +"戦"+ win +"勝" + lose +"負"
+            g.drawString("あなたの戦績："+ (win + lose + draw) +"戦"+ win +"勝" + lose +"負" + draw + "引", 0, 60);
+            g.drawString("対戦相手の戦績："+ (partner_win + partner_lose + partner_draw) +"戦"+ partner_win +"勝" + partner_lose +"負" + partner_draw + "引", 0, 40);
             if(turn.equals("先攻")){
-                g.drawString("あなたは黒石です", 0, 70);
+                g.drawString("あなたは黒石です", 0, 80);
             }else{
-                g.drawString("あなたは白石です", 0, 70);
+                g.drawString("あなたは白石です", 0, 80);
             }
             // 盤面描画
             for (int i = 0; i < 8; i++) {
@@ -244,8 +252,6 @@ public class OseroGui {
             if(!(flag == 0)){
                 Graphics2D g2d = (Graphics2D) g.create();
                 float alpha = 0.5f; // ぼかしの透明度（0.0から1.0の範囲）
-    
-                // ぼかしエリアの設定（例：四角形の領域）
                 int x = 0; // 左上のX座標
                 int y = 0; // 左上のY座標
     
@@ -297,7 +303,7 @@ public class OseroGui {
                         client.out.println(row);
                         flag = 1;
                         reload();
-                        disableMouseClickEvent();
+                        mainFrame.setEnabled(false);
                         timer.start();
                     }
                 }
@@ -310,7 +316,7 @@ public class OseroGui {
                 try {
                     board[i][k] = Integer.parseInt(client.in.readLine());
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
+                    System.out.println("ERROR in reload");
                 }
             }
         }
@@ -320,11 +326,12 @@ public class OseroGui {
         client.out.println("gamestart"); 
         try{
             partner = client.in.readLine();
-            win = Integer.parseInt(client.in.readLine());
-            lose = Integer.parseInt(client.in.readLine());
+            partner_win = Integer.parseInt(client.in.readLine());
+            partner_lose = Integer.parseInt(client.in.readLine());
+	        partner_draw = Integer.parseInt(client.in.readLine()); //*引き分けの場合もあるから追加
             turn = client.in.readLine();
         }catch(IOException e){
-            
+            System.out.println("ERROR in gamestart");
         }
         mainFrame.setSize(500, 550);
         cardLayout.show(containerPanel, "osero");
@@ -337,23 +344,42 @@ public class OseroGui {
                         flag = 0;
                         reload();
                         timer.stop();          
-                        osero_page.enableMouseClickEvent();     
+                        mainFrame.setEnabled(true);   
                     }else if(command.equals("FINISH")){
+			            client.out.println("finishrecord"); //*
                         reload();
                         String judge = client.in.readLine();
-                        if(judge.equals("WIN")) flag = 2;
-                        if(judge.equals("LOSE")) flag = 3;
-                        if(judge.equals("DRAW")) flag = 4;
+                        if(judge.equals("WIN")){
+                            flag = 2;
+                            client.out.println("winrecord"); //*
+                            win++; //*
+                            partner_lose++; //*
+			            }
+                        if(judge.equals("LOSE")){
+                            flag = 3;
+                            client.out.println("loserecord"); //*
+                            lose++; //*
+                            partner_win++; //*
+			            }
+                        if(judge.equals("DRAW")){
+                            flag = 4;
+                            client.out.println("drawrecord"); //*
+                            draw++; //*
+                            partner_draw++; //*
+			            }
                         osero_page.repaint();
-                        //ポップアップに勝ち負けかいてボタン作って画面戻る方が良さげ
+                        int black_count = Integer.parseInt(client.in.readLine());
+                        int white_count = Integer.parseInt(client.in.readLine());
                         Object[] options = {"もう1度ゲームをする", "アプリを終了する"};
                         JPanel judge_panel = new JPanel();
-                        judge_panel.setLayout(new GridBagLayout());
+                        judge_panel.setLayout(new BoxLayout(judge_panel, BoxLayout.Y_AXIS));
                         JLabel label = new JLabel(judge);
                         label.setFont(label.getFont().deriveFont(Font.BOLD, 20f)); // フォントサイズを変更
-                        label.setHorizontalAlignment(SwingConstants.CENTER); // テキストを中央に配置
-        
+                        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+                        JLabel count = new JLabel("黒 : "+ black_count +" 白 : " + white_count);
+                        count.setAlignmentX(Component.CENTER_ALIGNMENT);
                         judge_panel.add(label);
+                        judge_panel.add(count);
                         int choice = JOptionPane.showOptionDialog(mainFrame, judge_panel, "ゲーム終了",
                                 JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
@@ -369,7 +395,7 @@ public class OseroGui {
 
                     }
                 } catch (IOException er) {
-                    // TODO: handle exception
+                    System.out.println("ERROR in gamestart");
                 }
             }
         });
@@ -377,7 +403,8 @@ public class OseroGui {
 
     }
     public void reset(){
-        mainFrame.setSize(170, 100);
+        mainFrame.setSize(170, 120);
+        record.setText("戦績："+ (win + lose + draw) +"戦"+ win +"勝" + lose +"負" + draw + "引");
         announce.setText("　　　　　　　");
         cardLayout.show(containerPanel, "standby");
         timer.stop();
@@ -398,8 +425,9 @@ public class OseroGui {
     public void finishGame(){
         client.out.println("finish");
         try {
-            client.socket.close();
-        } catch (IOException e1) {
+            client.socket.close();        
+        } catch (IOException e) {
+            System.out.println("ERROR in finishGame");
         }
     }
 }

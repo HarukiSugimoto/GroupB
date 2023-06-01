@@ -1,28 +1,16 @@
 import java.io.*;
-import java.net.*;
-import java.util.Arrays;
 
 public class OseroGame{
     ServerThread interchange;//この値を交互で変更していくことでデータのやり取りをする
-    // int board[][] = {
-    //     {0,0,0,0,0,0,0,0},
-    //     {0,0,0,0,0,0,0,0},
-    //     {0,0,0,0,0,0,0,0},
-    //     {0,0,0,1,2,0,0,0},
-    //     {0,0,0,2,1,0,0,0},
-    //     {0,0,0,0,0,0,0,0},
-    //     {0,0,0,0,0,0,0,0},
-    //     {0,0,0,0,0,0,0,0},
-    // };
     int board[][] = {
-        {0,2,1,2,1,2,1,1},
-        {2,1,1,2,2,2,2,2},
-        {2,2,1,2,2,1,2,1},
-        {2,2,1,1,2,1,2,1},
-        {2,2,1,2,1,1,2,1},
-        {2,1,1,2,2,1,2,2},
-        {2,2,2,2,2,1,0,0},
-        {2,2,2,2,2,1,0,0},
+        {0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0},
+        {0,0,0,1,2,0,0,0},
+        {0,0,0,2,1,0,0,0},
+        {0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0},
     };
     OseroMethods osero = new OseroMethods(board);
     int flag = 0;
@@ -39,7 +27,8 @@ public class OseroGame{
         thread.out.println(partner_thread.username); //対戦相手の名前を送信
         //対戦相手の戦績を送信
         thread.out.println(partner_thread.win); 
-        thread.out.println(partner_thread.lose); 
+        thread.out.println(partner_thread.lose);
+	    thread.out.println(partner_thread.draw);
 
         thread.out.println("先攻");
         while(true){
@@ -57,7 +46,6 @@ public class OseroGame{
                 try{
                     int col = Integer.parseInt(thread.in.readLine());
                     int row = Integer.parseInt(thread.in.readLine());
-                    // board[row][col] = 1;//黒
                     flag = osero.PlayOsero(player, row, col);
                     board = osero.get_Board();
                 }catch(IOException e){
@@ -78,6 +66,7 @@ public class OseroGame{
         //対戦相手の戦績を送信
         thread.out.println(partner_thread.win); 
         thread.out.println(partner_thread.lose);
+	    thread.out.println(partner_thread.draw); //*引き分けの場合もあるから追加
 
         thread.out.println("後攻");
         send(thread);
@@ -143,16 +132,13 @@ public class OseroGame{
 
     int pass_flag = 0;
     public int check(int player){
-        // System.out.printf("Player %d 's checkStone = %d\n", player, osero.checkStone(player));
         if(pass_flag == 2) return 1;
         if(osero.checkStone(player)==0){
             pass_flag++;
             if(pass_flag == 2) return 1;
-            //おけない
             return -1;
         }else{
             pass_flag = 0;
-            //おける
             return 0;
         }
 
@@ -162,12 +148,13 @@ public class OseroGame{
         thread.out.println("FINISH");
         send_board(player, thread);
         if(score == 0){
-            //引き分け
             thread.out.println("DRAW");
         }else if(score == player){
             thread.out.println("WIN");
         }else{
             thread.out.println("LOSE");
         }
+        thread.out.println(osero.black_count);
+        thread.out.println(osero.white_count);
     }
 }

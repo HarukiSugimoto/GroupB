@@ -10,7 +10,7 @@ public class Server {
             while(true){
 
                 Socket socket = s.accept();
-                new ServerThread(socket).start();
+                new ServerThread(socket).start(); //接続されたらスレッドを開始
             }
         } finally{
             s.close();

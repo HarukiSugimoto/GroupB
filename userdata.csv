@@ -1,5 +1,4 @@
-haruki,1021,9999:0
-haru,aaa,0:0
-sugi,aaa,0:0
-syun,aaa,0:0
-harei,aaa,0:0
+aaa,bbb,6:4:0
+bbb,aaa,4:6:0
+ccc,ddd,0:1:0
+ddd,ccc,1:0:0
